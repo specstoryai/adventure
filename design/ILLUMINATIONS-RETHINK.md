@@ -1,11 +1,28 @@
 # Illuminations — a rethink
 
-> Status: **Brainstorm, for @jake.** Not a design and not canon. This exists because the
-> SPE-32 spike (`spike/illuminations/`, ten glyph-grid pages) did not work, and before we
-> fix the format we should question whether the format is the thing to fix. Everything
-> below is a candidate, including "cut the feature." See [DESIGN.md §6](./DESIGN.md) for
-> what Illuminations were meant to be and [UNIVERSE.md §6](./UNIVERSE.md) for the themes
-> any replacement must serve.
+> Status: **Resolved (2026-08-20, @jake).** This began as a brainstorm after the SPE-32
+> spike (`spike/illuminations/`, ten glyph-grid pages) did not work. Jake has now decided.
+> The menu below is kept as the record of the reasoning; the outcome is at the top.
+
+## Outcome
+
+- **Illuminations are cut.** The visual system — glyph-grid pictures, hotspots, the
+  Foundry tileset — is dropped from the design. It added no purpose a command couldn't and
+  could not reach the quality bar (§2). DESIGN.md and README.md are updated accordingly.
+- **Era text styling is adopted** (idea B4). Each landing gets a distinct typographic
+  treatment. It is presentation, not a discovery mechanic, and is now DESIGN.md §3.1.
+- **Private marks are adopted** (idea D1, narrowed). Travelers may leave short marks for
+  their own later return; self-only at launch, sharing deferred. Now DESIGN.md §3.4.
+- **The aria (A1) needs no change.** Occasionally longer passages are fine; there is no
+  slow-printing gimmick and no change to the game design or writing guide. Nothing to do.
+- **Rubbings (C1) — open question answered below**, not adopted. See §4, Family C.
+
+Everything from §1 down is the original brainstorm, left intact for the record.
+
+---
+
+> Original brainstorm follows. Not canon; superseded by the Outcome above where they
+> disagree.
 
 ---
 
@@ -191,6 +208,14 @@ discovery is an overlay of two times — impossible to type, native to carry-acr
 - *Clears the test:* emphatically. Persistence and consequence-at-a-distance made physical.
 - *Cost:* medium; a small item type plus authored match-points.
 - *Risk:* inventory fiddliness. Keep the vocabulary tiny (`RUB`, `PRESS`) and forgiving.
+- **Visuals or no visuals? (@jake's question):** no visuals required. A rubbing is an
+  *item with text*: `EXAMINE RUBBING` prints the inscription it carries, and `PRESS` tests
+  that text against a surface's text. The "overlay" is a match between two strings the
+  player collected across eras, reported in prose ("The rubbing's worn half completes the
+  lintel: the two together read *...*"). It works entirely inside the transcript, needs no
+  picture, and so survives the Illuminations cut. **Not adopting it yet** — it's a
+  standalone mechanic, not part of the discovery-visuals question, and worth its own
+  proposal when we design the item and puzzle systems.
 
 **C2. The map that draws itself.** No pre-drawn art. As you walk a realm across eras, a
 `MAP` view accretes in manuscript ink — coasts inked as you reach them, roads drawn as you

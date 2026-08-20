@@ -41,8 +41,10 @@ proposed feature fights one of them, the feature loses.
    does to the world, not from the mechanic itself.
 3. **One universe, many hands.** Anyone can build rooms, quests, even whole realms — but
    only we define the universe. Consistency is our product.
-4. **Wonder is rationed.** Visual "Illuminations" are rare on purpose. A gem you find in
-   one room in twenty is a gem; a gem in every room is wallpaper.
+4. **Wonder is rationed.** The extraordinary is rare on purpose — a longer passage than
+   the game has trained you to expect, a reply you didn't think to look for, the world
+   naming something you once did. A jolt you meet in one room in twenty is a gem; the same
+   jolt in every room is wallpaper.
 5. **A terminal, kindly.** It must feel like a classic command line and still be a
    pleasure on a phone.
 
@@ -55,8 +57,15 @@ a prompt below. No panes, no minimaps, no health bars. State that matters is dis
 by asking (`LOOK`, `INVENTORY`, `WHEN`), exactly as in Zork.
 
 Text arrives with a slight typewriter cadence (fast, skippable) so that the transcript
-feels performed rather than dumped. This same cadence is what makes Illuminations land —
-see §6.
+feels performed rather than dumped.
+
+Each landing has its own **text styling**: a typographic treatment — weight, spacing,
+ink — particular to the age, so that 2099 BA reads heavy and unmortared and 2099 AA reads
+lettered and fine. This is presentation, not content. The narrator's voice and words are
+constant (the accent is in the nouns, not the type; see the writing guide's era
+inflection); only the page's texture shifts. Striding across the Gap should *look* like
+the world woke up. The styling is ambient — felt more than noticed — and it is not a
+reward, a discovery, or a puzzle; it is simply what an age looks like.
 
 **Desktop:** keyboard-first. Command history on up-arrow. Tab completion for verbs and
 visible nouns.
@@ -110,6 +119,19 @@ script.**
 Multiplayer is deliberately thin at launch — presence, talk, trade, co-op mechanisms.
 It is a text adventure you happen to share, not a MUD with combat and levels.
 
+### 3.4 Marks
+
+A Traveler may leave a **mark** near loose ground — a scratch on a lintel, a stacked
+cairn, a coin turned face-down (the custom is canon; see the universe bible §3). A mark
+is a short line of the player's own text, left at a place-and-year.
+
+**At launch, marks are private.** You leave them for yourself, and you find them again on
+a later stride back through the same place — a note from a past self, the traveler's
+melancholy made into a game verb (`MARK`, `READ MARK`). Nobody else sees them yet.
+Sharing marks between Travelers is a natural later step, but it opens moderation and
+griefing questions (§3.3), so it stays out of launch; private marks carry none of that
+weight and need no review.
+
 ## 4. Time: the turning years
 
 ### 4.1 The rule
@@ -144,7 +166,7 @@ exactly like every other.
 
 The Awakening itself is **permanently unreachable and permanently unexplained**. That is
 settled canon, not a puzzle awaiting a finale: mystery is the universe's renewable
-resource, and it is ours alone (see §7).
+resource, and it is ours alone (see §6).
 
 ### 4.2 Why this shape
 
@@ -204,7 +226,7 @@ dynamics to put water in a bottle.
 The world divides into **realms** — contiguous geographic regions of, roughly, 30–150
 places, threaded through the six eras (an author may leave eras sparse: "in 2099 BA this
 whole valley is under the ice" is one sentence and perfectly good content). We author
-the founding realm; contributors propose new ones at the edges of the map (§7).
+the founding realm; contributors propose new ones at the edges of the map (§6).
 
 ### 5.2 Threads (quests)
 
@@ -231,61 +253,18 @@ eras* cooperating. One player holds the sluice open in 2099 BA; the streambed is
 her partner in 1099 AA, four strides of time downstream, for as long as she holds it. Used sparingly, in authored moments — never required
 for a Thread's only ending (a lone player must always have a path).
 
-## 6. Illuminations (the visual system)
+## 6. Extensibility and creative control
 
-### 6.1 The idea
-
-A small minority of rooms — the target is **fewer than one room in twenty** — contain an
-**Illumination**: a visual element that scrolls into the transcript the way text does,
-line by line, as if the terminal itself were printing it. The name is from illuminated
-manuscripts: most pages of the codex are ink; a rare page has gold leaf. Finding one
-should feel like finding a gem, and interacting with one can be critical to a Thread —
-they are game, not garnish.
-
-### 6.2 The constraint
-
-Open-ended HTML/CSS/JS is expressly forbidden. An Illumination is a declarative data
-file in a deliberately narrow format — our Minecraft-blocks constraint, one notch richer
-than ASCII art:
-
-- **A cell grid**, maximum 64 × 24 cells, aligned to the terminal's character grid so
-  that image and text share one typographic rhythm.
-- **Each cell holds one glyph** drawn from the **Foundry**: a single curated tileset we
-  maintain and version — strokes, hatching, foliage, water, masonry, creatures, and the
-  full monospace character set (ASCII art is a proper subset of the format).
-- **A fixed palette of 16 inks**, chosen once, era-neutral, matching the terminal theme.
-- **Animation** is a per-cell loop of up to 8 frames at a fixed slow tick — enough for
-  guttering candles, falling water, a turning mill wheel; not enough for cinema.
-- **Interactivity** is hotspots: a rectangular region of cells mapped to a *command*
-  (tapping the bell composes `RING BELL` into the prompt). Hotspots may show/hide grid
-  layers in response to game state (the door layer swaps when the door opens).
-
-Everything an Illumination can do, a command can do — tapping is a convenience, so the
-game remains fully playable blind, over a screen reader, or by a purist who refuses to
-touch the mouse on principle.
-
-### 6.3 Why a constraint this shape
-
-The grid-of-glyphs rule makes every Illumination in the game — by any author — feel
-sibling to every other, the way all Minecraft builds feel like Minecraft. It keeps
-contributions reviewable (a data file, not code), safe (nothing executes), portable
-(renders anywhere a terminal renders), and it preserves scarcity of *spectacle* while
-leaving room for craft. The Foundry tileset itself is canon-adjacent: we curate it, and
-extending it is a governance act (§7), not an author's whim.
-
-## 7. Extensibility and creative control
-
-### 7.1 The line
+### 6.1 The line
 
 **Anyone may build in the universe. Only we may build the universe.**
 
 - **We own:** the universe bible; the Awakening and the Gap; the nature and rules of the
-  Travelers; the timeline's fixed points; the Foundry tileset; the writing guide; the
-  name of the world.
+  Travelers; the timeline's fixed points; the writing guide; the name of the world.
 - **Contributors own (subject to review):** realms, places, era-states, items, NPCs,
-  Threads, Illuminations composed from the Foundry.
+  Threads.
 
-### 7.2 Canon tiers
+### 6.2 Canon tiers
 
 1. **Core canon** — the universe bible and everything it fixes. Written only by us.
    Precedent: every long-lived universe (Tolkien's legendarium, D&D's cosmology, Marvel
@@ -297,10 +276,10 @@ extending it is a governance act (§7), not an author's whim.
    a fair, a dream, a disreputable annex of the map) where new work can be played and
    critiqued before it is canon, without contaminating the world if it never gets there.
 
-### 7.3 Review
+### 6.3 Review
 
-Contributions are data (places, Threads, Illuminations in the constrained formats) and
-are reviewed like pull requests against three published gates:
+Contributions are data (places, Threads, items, era-states) and are reviewed like pull
+requests against three published gates:
 
 1. **Universe gate** — consistent with the bible; no new metaphysics; nothing about the
    Awakening beyond licensed mystery.
@@ -311,18 +290,18 @@ are reviewed like pull requests against three published gates:
 We hold final cut, always. As the community matures, trusted contributors can be
 deputized to review the second and third gates; the universe gate stays with us.
 
-## 8. Naming and technology notes
+## 7. Naming and technology notes
 
 - **Everwyn** is the name of the world and of the game, and *the Lapse* and *the
   Turning House* were approved in review. Other proper nouns used here — *the
-  Awakening*, *the Gap*, *Travelers*, *Threads*, *Illuminations*, *the Foundry* —
-  remain proposals; the universe bible brackets the ones still open to change.
+  Awakening*, *the Gap*, *Travelers*, *Threads* — remain proposals; the universe bible
+  brackets the ones still open to change.
 - Technology is out of scope for this document by design. The only constraints the
   design imposes on any future implementation: browser-based; a real shared world with
-  per-player story state; content (places, Threads, Illuminations) as reviewable
-  declarative data; playable on a phone without ceasing to be a terminal.
+  per-player story state; content (places, Threads) as reviewable declarative data;
+  playable on a phone without ceasing to be a terminal.
 
-## 9. Decision log and open questions
+## 8. Decision log and open questions
 
 Settled in review (2026-08-17, @jake):
 
@@ -334,13 +313,25 @@ Settled in review (2026-08-17, @jake):
 4. **Temporal verbs.** `PAST` / `FUTURE`, no aliases.
 5. **Time travel is per-room.** `PAST`/`FUTURE` are optional directions a room may or
    may not have, like any exit.
-6. **Illumination density.** Fewer than one room in twenty.
-7. **Multiplayer launch scope.** Presence, talk, trade, co-op mechanisms; no PvP, no
+6. **Multiplayer launch scope.** Presence, talk, trade, co-op mechanisms; no PvP, no
    combat, no economy.
-8. **The Gap arithmetic — the Lapse** (§4.1). Every stride is a millennium, the Gap
+7. **The Gap arithmetic — the Lapse** (§4.1). Every stride is a millennium, the Gap
    included; the calendars that say otherwise are wrong, and the proof is out of reach.
+
+Settled in review (2026-08-20, @jake):
+
+8. **Illuminations are cut.** The visual "Illumination" system (glyph-grid pictures,
+   hotspots, the Foundry tileset) is dropped. The spike showed it added no purpose a
+   command couldn't and could not reach the quality bar. The wonder budget stays in text
+   and consequence, where the game is strongest. See the rethink brainstorm
+   ([ILLUMINATIONS-RETHINK.md](./ILLUMINATIONS-RETHINK.md)) for the reasoning and the
+   ideas kept below.
+9. **Era text styling** (§3.1). Each landing gets a distinct typographic treatment.
+   Presentation only, unrelated to discovery; the narrator's voice stays constant.
+10. **Private marks** (§3.4). Travelers may leave short marks for their own later return.
+    Self-only at launch; sharing between players is deferred.
 
 Open:
 
-1. **Provisional proper nouns.** *Threads*, *Illuminations*, *Foundry*, *Apocrypha* —
-   standing unless vetoed. (*Turning House* was approved in review.)
+1. **Provisional proper nouns.** *Threads*, *Apocrypha* — standing unless vetoed.
+   (*Turning House* was approved in review.)
