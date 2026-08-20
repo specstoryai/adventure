@@ -1,0 +1,23 @@
+{
+  "name": "everwyn",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Everwyn — a text adventure in deep time. Minimum playable CLI slice.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "bin": {
+    "everwyn": "src/cli.ts"
+  },
+  "scripts": {
+    "start": "node src/cli.ts",
+    "play": "node src/cli.ts",
+    "test": "node --test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}
