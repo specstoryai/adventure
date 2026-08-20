@@ -292,10 +292,10 @@ deputized to review the second and third gates; the universe gate stays with us.
 
 ## 7. Naming and technology notes
 
-- **Everwyn** is the name of the world and of the game, and *the Lapse*, *the Turning
-  House*, *Stories*, and *the Apocrypha* were approved in review. Other proper nouns used
-  here — *the Awakening*, *the Gap*, *Travelers* — remain proposals; the universe bible
-  brackets the ones still open to change.
+- **Everwyn** is the name of the world and of the game. The proper nouns used here — *the
+  Awakening*, *the Gap*, *Travelers*, *the Lapse*, *the Turning House*, *Stories*, *the
+  Apocrypha* — are all settled (§8). New names arrive with new content and are reviewed
+  under the writing and universe gates (§6.3).
 - Technology is out of scope for this document by design. The only constraints the
   design imposes on any future implementation: browser-based; a real shared world with
   per-player story state; content (places, Stories) as reviewable declarative data;
@@ -326,11 +326,12 @@ Settled in review (2026-08-17 – 2026-08-20, @jake):
    Presentation only, unrelated to discovery; the narrator's voice stays constant.
 10. **Private marks** (§3.4). Travelers may leave short marks for their own later return.
     Self-only at launch; sharing between players is deferred.
-11. **Naming.** *Threads* is renamed *Stories* throughout. *Stories* and *the Apocrypha*
-    are approved proper nouns (§7).
+11. **Naming.** *Threads* is renamed *Stories* throughout. Every proper noun in current
+    use is settled: *Everwyn*, *the Awakening*, *the Gap*, *Travelers*, *the Lapse*, *the
+    Turning House*, *Stories*, *the Apocrypha* (§7). There is no standing "provisional"
+    list; names introduced by future content pass through the writing and universe gates
+    (§6.3) like any other contribution.
 
 Open:
 
-1. **Provisional proper nouns.** *The Awakening*, *the Gap*, *Travelers* — standing
-   unless vetoed. (*Turning House*, *Stories*, and *the Apocrypha* were approved in
-   review.)
+_None at this time._
