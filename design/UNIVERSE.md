@@ -129,7 +129,7 @@ breath, and living proof of persistence, the universe's favorite theme.
 
 ## 6. Themes (what every story is secretly about)
 
-Contributed Threads must sound at least one of these notes; our review listens for them.
+Contributed Stories must sound at least one of these notes; our review listens for them.
 
 1. **Persistence.** What lasts a thousand years is never what anyone intended: not the
    kingdom, but the road; not the cathedral, but the well beside it; not the family

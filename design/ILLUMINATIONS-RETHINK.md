@@ -16,8 +16,11 @@
 - **The aria (A1) needs no change.** Occasionally longer passages are fine; there is no
   slow-printing gimmick and no change to the game design or writing guide. Nothing to do.
 - **Rubbings (C1) — open question answered below**, not adopted. See §4, Family C.
+- **Naming.** *Threads* is renamed *Stories* throughout the design docs. *Stories* and
+  *the Apocrypha* are approved proper nouns, no longer provisional (DESIGN.md §7, §8).
 
-Everything from §1 down is the original brainstorm, left intact for the record.
+Everything from §1 down is the original brainstorm, left intact for the record (renamed
+to *Story*/*Stories* for terminology consistency; the reasoning is otherwise unchanged).
 
 ---
 
@@ -151,7 +154,7 @@ examinable.
 > It has been painted over once already. Under the new paint, an older fox faces the
 > other way.
 
-- *Clears the test:* the historiation hides a clue (here, the palimpsest hints a Thread);
+- *Clears the test:* the historiation hides a clue (here, the palimpsest hints a Story);
   noticing it is the discovery. The letter is also just beautiful, on its own terms.
 - *Cost:* medium. Real art, but a *bounded* kind — an alphabet of ornamented capitals is a
   finite, reusable asset, unlike infinite bespoke scenes.
@@ -257,14 +260,14 @@ as the visual. History literally under history; the forgotten thing, almost surf
 - *Risk:* small and lovely; mostly just needs the right authored pairs.
 
 **D3. Gilding earned, not found.** Invert the whole model. An Illumination is not something
-you *find* in a room — it is something a room *becomes* when you finish a Thread there. Gold
+you *find* in a room — it is something a room *becomes* when you finish a Story there. Gold
 leaf spreads across the closing page as your commemoration (§5.3, the compass of endings).
 This fixes both failures at once: every illumination is load-bearing (it marks an ending),
 and scarcity is automatic (there are only so many endings). The gem is a reward for
 persistence, which is the universe's favorite theme. Of everything here, this is the one I'd
 prototype first, because it turns the feature from decoration into consequence.
 
-- *Risk:* couples illuminations to the Thread system, which doesn't exist yet. But it argues
+- *Risk:* couples illuminations to the Story system, which doesn't exist yet. But it argues
   they *should* be coupled, and that may be the real lesson of the spike.
 
 **D4. Cut it.** State the honest option plainly. Retire "Illuminations" as a named visual
@@ -283,14 +286,14 @@ over. Every idea above delivers at least one; if a proposal delivers none, it's 
 - **A clue** — knowledge available no other way (A2, B1, C3, D2).
 - **A capability** — a new exit, verb, or item (C1, C3).
 - **A commemoration** — the world marking what you did (A3, D1, D3).
-- **A connection** — one Thread recognizing another across the years (A3, B1).
+- **A connection** — one Story recognizing another across the years (A3, B1).
 
 The spike's hotspots gave none of these. That, in one line, is why it felt empty.
 
 ## 6. Where I'd point next
 
 If we prototype, prototype **D3 (earned gilding)** and **A1 (the aria)** together as the
-smallest end-to-end slice: finish a tiny two-room Thread, watch the closing page gild while
+smallest end-to-end slice: finish a tiny two-room Story, watch the closing page gild while
 the narrator, for once, breathes out. That single moment would tell us whether "discovery"
 in Everwyn wants to be seen or read — and either answer is cheaper to test than another ten
 glyph-grid pages. **C2 (the self-drawing map)** is the high-ceiling swing worth a separate

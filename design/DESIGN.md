@@ -112,7 +112,7 @@ script.**
 - **Sparseness:** Everwyn must never feel crowded. Travelers are few and the years are
   wide, so two players in the same room and the same year do not automatically meet:
   the world surfaces at most a handful of fellow Travelers at a time, chosen quietly
-  (a companion you have traveled with before, a stranger whose Thread brushes yours).
+  (a companion you have traveled with before, a stranger whose Story brushes yours).
   Meeting someone should feel like meeting a walker on a mountain road, not entering
   a lobby.
 
@@ -228,30 +228,30 @@ places, threaded through the six eras (an author may leave eras sparse: "in 2099
 whole valley is under the ice" is one sentence and perfectly good content). We author
 the founding realm; contributors propose new ones at the edges of the map (§6).
 
-### 5.2 Threads (quests)
+### 5.2 Stories (quests)
 
-A **Thread** is a storyline: a braid of scenes, characters, and puzzles, usually spanning
+A **Story** is a strand: a braid of scenes, characters, and puzzles, usually spanning
 several eras, with a beginning and at least one ending. There is no single "winning" of
-Everwyn — the game accretes Threads the way a long-running universe accretes tales.
-Threads can be small (one room, one ghost, one kindness) or realm-spanning epics.
+Everwyn — the game accretes Stories the way a long-running universe accretes tales.
+Stories can be small (one room, one ghost, one kindness) or realm-spanning epics.
 
-Threads declare their dependencies (places, items, canon facts) and may *reference* other
-Threads' outcomes, which is how seemingly distant stories come to connect — the
+Stories declare their dependencies (places, items, canon facts) and may *reference* other
+Stories' outcomes, which is how seemingly distant stories come to connect — the
 Marvel/Tolkien pleasure of recognizing a name from another tale a thousand years away.
 
 ### 5.3 The compass of endings
 
-Multiple Threads means multiple endings, and endings need weight. Completing a Thread is
+Multiple Stories means multiple endings, and endings need weight. Completing a Story is
 commemorated in the world itself where possible — an epitaph gains a line, a song gains a
 verse in a later era — visible to that player in their story, and recorded on their
-Traveler's record (`THREADS` lists tales begun, abandoned, and finished).
+Traveler's record (`STORIES` lists tales begun, abandoned, and finished).
 
 ### 5.4 Cross-time cooperation
 
 The multiplayer flourish unique to Everwyn: two players in the *same place, different
 eras* cooperating. One player holds the sluice open in 2099 BA; the streambed is dry for
 her partner in 1099 AA, four strides of time downstream, for as long as she holds it. Used sparingly, in authored moments — never required
-for a Thread's only ending (a lone player must always have a path).
+for a Story's only ending (a lone player must always have a path).
 
 ## 6. Extensibility and creative control
 
@@ -262,7 +262,7 @@ for a Thread's only ending (a lone player must always have a path).
 - **We own:** the universe bible; the Awakening and the Gap; the nature and rules of the
   Travelers; the timeline's fixed points; the writing guide; the name of the world.
 - **Contributors own (subject to review):** realms, places, era-states, items, NPCs,
-  Threads.
+  Stories.
 
 ### 6.2 Canon tiers
 
@@ -271,20 +271,20 @@ for a Thread's only ending (a lone player must always have a path).
    continuity) has a small custodial center that keeps a large collaborative edge
    coherent.
 2. **Canon content** — contributed work that has passed review. It is *in* the world:
-   on the shared map, reachable by every player, citable by later Threads.
+   on the shared map, reachable by every player, citable by later Stories.
 3. **The Apocrypha** — a labeled proving ground (reached through a door in-fiction —
    a fair, a dream, a disreputable annex of the map) where new work can be played and
    critiqued before it is canon, without contaminating the world if it never gets there.
 
 ### 6.3 Review
 
-Contributions are data (places, Threads, items, era-states) and are reviewed like pull
+Contributions are data (places, Stories, items, era-states) and are reviewed like pull
 requests against three published gates:
 
 1. **Universe gate** — consistent with the bible; no new metaphysics; nothing about the
    Awakening beyond licensed mystery.
 2. **Writing gate** — passes the writing guide.
-3. **Craft gate** — puzzles fair, Threads completable, era-states of each place coherent
+3. **Craft gate** — puzzles fair, Stories completable, era-states of each place coherent
    with their neighbors in time.
 
 We hold final cut, always. As the community matures, trusted contributors can be
@@ -292,18 +292,18 @@ deputized to review the second and third gates; the universe gate stays with us.
 
 ## 7. Naming and technology notes
 
-- **Everwyn** is the name of the world and of the game, and *the Lapse* and *the
-  Turning House* were approved in review. Other proper nouns used here — *the
-  Awakening*, *the Gap*, *Travelers*, *Threads* — remain proposals; the universe bible
+- **Everwyn** is the name of the world and of the game, and *the Lapse*, *the Turning
+  House*, *Stories*, and *the Apocrypha* were approved in review. Other proper nouns used
+  here — *the Awakening*, *the Gap*, *Travelers* — remain proposals; the universe bible
   brackets the ones still open to change.
 - Technology is out of scope for this document by design. The only constraints the
   design imposes on any future implementation: browser-based; a real shared world with
-  per-player story state; content (places, Threads) as reviewable declarative data;
+  per-player story state; content (places, Stories) as reviewable declarative data;
   playable on a phone without ceasing to be a terminal.
 
 ## 8. Decision log and open questions
 
-Settled in review (2026-08-17, @jake):
+Settled in review (2026-08-17 – 2026-08-20, @jake):
 
 1. **Name.** *Everwyn* — the name of the world and of the game. *99* is retired to
    codename; the turning-years motif stays in the world.
@@ -318,8 +318,6 @@ Settled in review (2026-08-17, @jake):
 7. **The Gap arithmetic — the Lapse** (§4.1). Every stride is a millennium, the Gap
    included; the calendars that say otherwise are wrong, and the proof is out of reach.
 
-Settled in review (2026-08-20, @jake):
-
 8. **Illuminations are cut.** The visual "Illumination" system (glyph-grid pictures,
    hotspots, the Foundry tileset) is dropped. The spike showed it added no purpose a
    command couldn't and could not reach the quality bar. The wonder budget stays in text
@@ -330,8 +328,11 @@ Settled in review (2026-08-20, @jake):
    Presentation only, unrelated to discovery; the narrator's voice stays constant.
 10. **Private marks** (§3.4). Travelers may leave short marks for their own later return.
     Self-only at launch; sharing between players is deferred.
+11. **Naming.** *Threads* is renamed *Stories* throughout. *Stories* and *the Apocrypha*
+    are approved proper nouns (§7).
 
 Open:
 
-1. **Provisional proper nouns.** *Threads*, *Apocrypha* — standing unless vetoed.
-   (*Turning House* was approved in review.)
+1. **Provisional proper nouns.** *The Awakening*, *the Gap*, *Travelers* — standing
+   unless vetoed. (*Turning House*, *Stories*, and *the Apocrypha* were approved in
+   review.)
