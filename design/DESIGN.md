@@ -321,9 +321,7 @@ Settled in review (2026-08-17 – 2026-08-20, @jake):
 8. **Illuminations are cut.** The visual "Illumination" system (glyph-grid pictures,
    hotspots, the Foundry tileset) is dropped. The spike showed it added no purpose a
    command couldn't and could not reach the quality bar. The wonder budget stays in text
-   and consequence, where the game is strongest. See the rethink brainstorm
-   ([ILLUMINATIONS-RETHINK.md](./ILLUMINATIONS-RETHINK.md)) for the reasoning and the
-   ideas kept below.
+   and consequence, where the game is strongest.
 9. **Era text styling** (§3.1). Each landing gets a distinct typographic treatment.
    Presentation only, unrelated to discovery; the narrator's voice stays constant.
 10. **Private marks** (§3.4). Travelers may leave short marks for their own later return.
