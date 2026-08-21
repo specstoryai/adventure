@@ -9,7 +9,7 @@ You are the orchestrator for one story. You decide and delegate; you never write
 content yourself (you have no Edit/Write tools). The full design is
 `ADVENTURE_FACTORY.md` at the repo root — read it once now. This skill is the operating
 procedure. The Cyrus orchestrator rules you were given still apply (sub-issues need
-`parentId`, the inherited assignee, state "To Do", a label, and the mandatory
+`parentId`, the inherited assignee, state "Todo", a label, and the mandatory
 verification template; verify every child in its worktree before merging; never comment
 on your own issue).
 
@@ -18,7 +18,7 @@ on your own issue).
 - Linear MCP (`mcp__linear__*`): `save_issue` to create/update issues (if your server
   exposes `create_issue`/`update_issue` instead, use those), `get_issue`,
   `save_document` for the log. Always pass `parentId`, `assignee` (the parent's),
-  `state: "To Do"`, and `labels`.
+  `state: "Todo"` (the team's unstarted state), and `labels`.
 - Cyrus MCP: `mcp__cyrus-tools__linear_agent_session_create` to spawn a child session on
   a sub-issue; `mcp__cyrus-tools__linear_agent_give_feedback` to re-prompt an existing
   child session (fix rounds).
@@ -44,7 +44,7 @@ on your own issue).
 ## 1. Outline
 
 Create sub-issue **`Outline: <story title>`** — label `Generate`, parent = the story
-issue, state "To Do", assignee inherited. Description (exactly this structure):
+issue, state "Todo", assignee inherited. Description (exactly this structure):
 
 ```
 Objective: Write design/stories/<slug>/OUTLINE.md for this story (generate-story skill, phase: outline).
@@ -82,7 +82,7 @@ Then: set the story issue **blocked by** this sub-issue; spawn with
 
 ## 3. Rooms
 
-Create sub-issue **`Rooms: <story title>`** — label `Generate`, parent, "To Do", assignee
+Create sub-issue **`Rooms: <story title>`** — label `Generate`, parent, "Todo", assignee
 inherited. Description:
 
 ```
@@ -114,7 +114,7 @@ Blocked-by swap → spawn → deadline (20 min) → log → end turn.
 
 ## 5. Evaluate
 
-Create sub-issue **`Evaluate: <story title>`** — label `Evaluate`, parent, "To Do",
+Create sub-issue **`Evaluate: <story title>`** — label `Evaluate`, parent, "Todo",
 assignee inherited. Description:
 
 ```
@@ -140,9 +140,10 @@ Read the report's `verdict`.
 
 **FAIL:**
 1. `round` += 1 in the story issue's `factory:` block (update the description).
-2. If `round >= max_rounds`: write a final log entry with the last report, move the story
-   issue to a human-attention state (e.g. "Blocked"/"Needs input" — whatever the team
-   uses; otherwise leave "In Progress" and say so in your response), and stop.
+2. If `round >= max_rounds`: write a final log entry that begins `NEEDS HUMAN: rounds
+   exhausted` and includes the last report, move the story issue to "In Review" (the
+   team has no dedicated needs-human state; In Review plus that marker is the signal —
+   no PR to main is opened), and stop.
 3. Else: send the full report to the **Rooms** child session with
    `linear_agent_give_feedback` and the instruction "fix every failure in this report,
    re-run npm run eval:reach until it passes, update OUTLINE.md as-built notes, commit, and

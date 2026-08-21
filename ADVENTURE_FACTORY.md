@@ -233,8 +233,10 @@ that report to the orchestrator on resume.
 
 ### 5.7 Close the loop
 
-- **FAIL:** increment `round` in the story issue. If `round ≥ max_rounds`, stop: post a
-  summary with the last report, move the story to a human-attention state, done. Else
+- **FAIL:** increment `round` in the story issue. If `round ≥ max_rounds`, stop: write a
+  final log entry beginning `NEEDS HUMAN: rounds exhausted` with the last report, move the
+  story to In Review (the team has no dedicated needs-human state; In Review without a PR
+  to `main` plus that marker is the signal), done. Else
   hand the full report back to the Rooms generator — preferably by re-prompting its
   existing session (`linear_agent_give_feedback`, which keeps its worktree and context),
   or, if that session is gone, by creating **"Rooms (round N): <one-line summary>"** with
