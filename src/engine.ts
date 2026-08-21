@@ -1,5 +1,6 @@
-import type { Room, Item, Scenery, Examinable } from "./types.ts";
-import { parse, type Command, type Verb } from "./parser.ts";
+import type { Room, Item, Scenery, Examinable, World, Direction } from "./types.ts";
+import { parse, type Command } from "./parser.ts";
+import { roomMap, strideTarget, validateWorld } from "./world.ts";
 
 export interface Turn {
   text: string;
@@ -7,7 +8,8 @@ export interface Turn {
   quit?: boolean;
 }
 
-type ItemPlace = "room" | "inventory" | "gone";
+/** Where an item is: carried, consumed, or the id of the room it lies in. */
+type ItemPlace = "inventory" | "gone" | string;
 
 /**
  * The game. Holds the world and turns typed lines into replies. Pure with
@@ -15,17 +17,39 @@ type ItemPlace = "room" | "inventory" | "gone";
  * testable and the same engine can back a terminal, a socket, or the web.
  */
 export class Game {
-  private readonly room: Room;
+  private readonly world: World;
+  private readonly rooms: Map<string, Room>;
+  private readonly itemIndex = new Map<string, Item>();
+  private readonly itemHome = new Map<string, string>();
   private readonly itemPlace = new Map<string, ItemPlace>();
-  private visited = false;
+  private room: Room;
+  private readonly visited = new Set<string>();
   private mark: string | null = null;
   private lastCommand: Command | null = null;
 
-  constructor(room: Room) {
-    this.room = room;
-    for (const item of room.items) {
-      this.itemPlace.set(item.id, item.start === "inventory" ? "inventory" : "room");
+  /** Accepts a whole world, or a single room for a one-room world. */
+  constructor(worldOrRoom: World | Room) {
+    this.world = isWorld(worldOrRoom)
+      ? worldOrRoom
+      : { start: worldOrRoom.id, landings: [worldOrRoom.landing], rooms: [worldOrRoom] };
+    const problems = validateWorld(this.world);
+    if (problems.length > 0) {
+      throw new Error(`invalid world:\n  ${problems.join("\n  ")}`);
     }
+    this.rooms = roomMap(this.world);
+    this.room = this.rooms.get(this.world.start)!;
+    for (const room of this.world.rooms) {
+      for (const item of room.items) {
+        this.itemIndex.set(item.id, item);
+        this.itemHome.set(item.id, room.id);
+        this.itemPlace.set(item.id, item.start === "inventory" ? "inventory" : room.id);
+      }
+    }
+  }
+
+  /** The id of the room the player is in. For tests and evaluators. */
+  where(): string {
+    return this.room.id;
   }
 
   /** The opening banner and first look, for the start of a session. */
@@ -105,18 +129,17 @@ export class Game {
   // --- world description -----------------------------------------------------
 
   private describeRoom(): string {
-    const first = !this.visited;
-    this.visited = true;
+    const first = !this.visited.has(this.room.id);
+    this.visited.add(this.room.id);
     const body = first ? this.room.look : this.room.lookAgain ?? this.room.look;
 
     const lines = [this.room.title, body];
 
-    // Items dropped into the room after the fact are listed, Zork-style.
-    const extras = this.room.items.filter(
-      (it) => this.itemPlace.get(it.id) === "room" && it.start !== "room",
-    );
-    for (const it of extras) {
-      lines.push(`There is ${article(it.nouns[0]!)} here.`);
+    // Items lying here that the look text doesn't already account for — things
+    // dropped here, or carried in from elsewhere — are listed, Zork-style.
+    for (const it of this.itemsHere()) {
+      const native = this.itemHome.get(it.id) === this.room.id && it.start === "room";
+      if (!native) lines.push(`There is ${article(it.nouns[0]!)} here.`);
     }
 
     const timeLine = this.timeLine();
@@ -139,9 +162,6 @@ export class Game {
     if (noun === "") return "Examine what?";
     const target = this.resolve(noun);
     if (!target) return "You can't see any such thing.";
-    if (isItem(target) && this.itemPlace.get(target.id) === "gone") {
-      return "You can't see any such thing.";
-    }
     return target.description;
   }
 
@@ -165,9 +185,7 @@ export class Game {
   }
 
   private takeAll(): string {
-    const here = this.room.items.filter(
-      (it) => this.itemPlace.get(it.id) === "room",
-    );
+    const here = this.itemsHere();
     if (here.length === 0) return "There is nothing here to take.";
     const lines: string[] = [];
     for (const it of here) {
@@ -187,32 +205,38 @@ export class Game {
     if (!target || !isItem(target) || this.itemPlace.get(target.id) !== "inventory") {
       return "You aren't carrying that.";
     }
-    this.itemPlace.set(target.id, "room");
+    this.itemPlace.set(target.id, this.room.id);
     return "Dropped.";
   }
 
   private inventory(): string {
-    const held = this.room.items.filter(
-      (it) => this.itemPlace.get(it.id) === "inventory",
-    );
+    const held = this.carried();
     if (held.length === 0) return "You are carrying nothing.";
     return ["You are carrying:", ...held.map((it) => `  ${it.nouns[0]}`)].join("\n");
   }
 
   private go(direction: string): string {
     if (direction === "") return "Go where?";
-    // No spatial exits are built in this one-room slice.
-    return "You can't go that way.";
+    const target = this.room.exits?.[direction as Direction];
+    const next = target === undefined ? undefined : this.rooms.get(target);
+    if (!next) return "You can't go that way.";
+    this.room = next;
+    return this.describeRoom();
   }
 
   private stride(way: "past" | "future"): string {
     const open = way === "past" ? this.room.time.past : this.room.time.future;
+    const reach = way === "past" ? "back" : "on";
     if (!open) {
-      const reach = way === "past" ? "back" : "on";
       return `You reach ${reach}. The years do not give. Tonight the House holds still.`;
     }
-    // With more landings built, this is where a stride would move the player.
-    return "The years pour past. You arrive, and it is a different world.";
+    const next = strideTarget(this.world, this.room, way);
+    if (!next) {
+      // The years run here, but no face of this place is built in that age.
+      return `You reach ${reach}. The years give — but nothing of this place stands in that age, and they set you down where you were.`;
+    }
+    this.room = next;
+    return ["The years pour past. You arrive, and it is a different world.", "", this.describeRoom()].join("\n");
   }
 
   private when(): string {
@@ -255,7 +279,6 @@ export class Game {
     if (noun === "") return "Eat what?";
     const target = this.resolve(noun);
     if (!target || !isItem(target)) return "That's not for eating.";
-    if (this.itemPlace.get(target.id) === "gone") return "You can't see any such thing.";
     if (!target.eat) return "That's not for eating.";
     this.itemPlace.set(target.id, "gone");
     return target.eat;
@@ -263,12 +286,17 @@ export class Game {
 
   // --- lookup ----------------------------------------------------------------
 
-  /** Find an item (in room or hand) or scenery matching a noun phrase. */
+  private itemsHere(): Item[] {
+    return [...this.itemIndex.values()].filter((it) => this.itemPlace.get(it.id) === this.room.id);
+  }
+
+  private carried(): Item[] {
+    return [...this.itemIndex.values()].filter((it) => this.itemPlace.get(it.id) === "inventory");
+  }
+
+  /** Find an item (here or in hand) or scenery in this room matching a noun phrase. */
   private resolve(noun: string): Item | Scenery | null {
-    const visibleItems = this.room.items.filter(
-      (it) => this.itemPlace.get(it.id) !== "gone",
-    );
-    const candidates: Array<Item | Scenery> = [...visibleItems, ...this.room.scenery];
+    const candidates: Array<Item | Scenery> = [...this.itemsHere(), ...this.carried(), ...this.room.scenery];
 
     // Exact phrase match wins.
     for (const c of candidates) {
@@ -288,6 +316,10 @@ export class Game {
 }
 
 // --- helpers -----------------------------------------------------------------
+
+function isWorld(x: World | Room): x is World {
+  return "rooms" in x;
+}
 
 function isItem(x: Examinable): x is Item {
   return "start" in x;

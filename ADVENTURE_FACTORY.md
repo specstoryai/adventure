@@ -3,8 +3,10 @@
 *An autonomous plan → generate → evaluate loop that turns a story idea into playable
 rooms, run by Linear and CyLocal (a self-hosted Cyrus agent).*
 
-> Status: **Draft v1 — design, not yet implemented.** Nothing here runs until the
-> build order in §12 is carried out. Open questions are collected in §13.
+> Status: **v1 implemented (branch `factory`), awaiting its first live story.** The
+> engine gained multi-room worlds (spatial exits, time strides, validation, reachability);
+> the skills, `AGENTS.md`, harness, and setup script are in the repo; CyLocal's label
+> prompts are configured. Open questions are collected in §13.
 
 Companion documents:
 
@@ -233,8 +235,11 @@ that report to the orchestrator on resume.
 
 - **FAIL:** increment `round` in the story issue. If `round ≥ max_rounds`, stop: post a
   summary with the last report, move the story to a human-attention state, done. Else
-  create **"Rooms (round N): <one-line summary>"** with the full report in the
-  description, spawn, and go to §5.5 — the generator now has exact repros.
+  hand the full report back to the Rooms generator — preferably by re-prompting its
+  existing session (`linear_agent_give_feedback`, which keeps its worktree and context),
+  or, if that session is gone, by creating **"Rooms (round N): <one-line summary>"** with
+  the report in the description — and go to §5.5. Either way the generator now has exact
+  repros.
 - **PASS:** open the PR story branch → `main`, move the story issue to In Review, post a
   summary. Jake reviews a whole, evaluated story; `main` never sees a half-made one.
 
@@ -291,9 +296,12 @@ mandatory, not optional.
 | Path | Purpose |
 |---|---|
 | `AGENTS.md` | The non-negotiables every session must obey (read design docs first; commit per room; never stop before goal/limit; PR against the story branch). Agent-agnostic by name; Claude-based sessions (which is what CyLocal runs) load `CLAUDE.md`, so keep `CLAUDE.md` as a symlink to `AGENTS.md`. |
-| `.claude/skills/generate-story/` | The generator playbook (outline format, per-room procedure, data shape, checks). |
+| `.claude/skills/orchestrate-story/` | The orchestrator's operating procedure: sub-issue templates, the outline check, rounds, deadlines, the log. Layers on Cyrus's built-in orchestrator prompt. |
+| `.claude/skills/generate-story/` | The generator playbook (outline format, per-room procedure, data shape, checks, fix rounds). |
 | `.claude/skills/evaluate-story/` | The evaluator playbook (run harness, play routes, report format). |
-| `scripts/eval-reach.ts` + `npm run eval:reach` | The reachability harness. Deterministic; also runnable as a test. |
+| `scripts/eval-reach.ts` + `npm run eval:reach` | The reachability harness. Deterministic; exit 1 on any unreachable room; `--json` for machines. |
+| `scripts/play.ts` | Scripted playthrough through the real engine (`--expect <room id>` exits 1 if the route doesn't land there). The evaluator's second layer; it has no Write tool, so this script exists. |
+| `src/world.ts` | World helpers the engine and harness share: lookup, stride resolution, `validateWorld`, `reachability`. |
 | `design/stories/<slug>/OUTLINE.md` | One per story: the story's working bible — the expanded story, the room plan with per-room as-built notes, cross-room threads, blockers. Every generator reads it and every generator improves it. |
 | `design/stories/<slug>/LOG.md` | Mirror of the orchestration log (§5.8); the Linear document linked to the story issue is the primary copy. |
 | `src/content/` | Generated rooms, in the engine's data shape. |
@@ -381,9 +389,19 @@ Per-repo in `~/.cyrus/config.json` (hot-reloaded):
 "labelPrompts": {
   "orchestrator": { "labels": ["Game Story"], "allowedTools": "coordinator" },
   "builder":      { "labels": ["Generate"],   "allowedTools": "all" },
-  "scoper":       { "labels": ["Evaluate"],   "allowedTools": "safe" }
+  "scoper":       { "labels": ["Evaluate"],   "allowedTools": [
+    "Read(**)", "Glob", "Grep", "Skill", "Task", "TaskCreate", "TaskUpdate", "TaskGet", "TaskList",
+    "Bash(npm install:*)", "Bash(npm run eval:reach:*)", "Bash(npm test:*)",
+    "Bash(npm run typecheck:*)", "Bash(node scripts/play.ts:*)",
+    "Bash(git status:*)", "Bash(git log:*)", "Bash(git diff:*)"
+  ] }
 }
 ```
+
+The evaluator gets an explicit list rather than Cyrus's `safe` preset because `safe`
+is "everything except Bash" — and the evaluator must run the harness and the
+playthrough script. The list has no Edit/Write and no `git commit`, so it can report
+but not fix, by construction.
 
 Plus `cyrus-setup.sh` in the repo. Everything role-specific beyond that comes from the
 repo's `AGENTS.md` and skills (§7), which the orchestrator invokes by name when it writes

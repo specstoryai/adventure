@@ -23,15 +23,8 @@ export type Verb =
   | "help"
   | "quit";
 
-export type Direction =
-  | "north"
-  | "south"
-  | "east"
-  | "west"
-  | "up"
-  | "down"
-  | "in"
-  | "out";
+import type { Direction } from "./types.ts";
+export type { Direction };
 
 export interface Command {
   verb: Verb;

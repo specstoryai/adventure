@@ -2,7 +2,7 @@
 import * as readline from "node:readline";
 import { stdin, stdout, env, exit } from "node:process";
 import { Game } from "./engine.ts";
-import { turningHouse } from "./content/turning-house.ts";
+import { world } from "./content/index.ts";
 
 // The transcript arrives with a slight typewriter cadence (fast, skippable),
 // per the design. It turns itself off when output isn't a terminal (pipes,
@@ -53,7 +53,7 @@ async function typeOut(text: string): Promise<void> {
 rl.on("SIGINT", () => rl.close());
 
 async function main(): Promise<void> {
-  const game = new Game(turningHouse);
+  const game = new Game(world);
   await typeOut(game.intro());
 
   rl.setPrompt("\n> ");

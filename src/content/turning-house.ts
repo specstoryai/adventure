@@ -6,6 +6,7 @@ import type { Room } from "../types.ts";
 
 export const turningHouse: Room = {
   id: "turning-house",
+  place: "turning-house",
   title: "The Turning House",
   landing: "2099 BA",
   age: "the High Masonry",

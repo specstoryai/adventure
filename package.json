@@ -14,7 +14,8 @@
     "start": "node src/cli.ts",
     "play": "node src/cli.ts",
     "test": "node --test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "eval:reach": "node scripts/eval-reach.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
