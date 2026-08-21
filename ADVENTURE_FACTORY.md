@@ -104,6 +104,8 @@ factory:
   max_rooms: 8        # hard cap on rooms (places × eras) for this story
   max_rounds: 3       # fix rounds allowed after the first evaluation (retries), then escalate to a human
   round: 0            # maintained by the orchestrator
+  max_revisions: 5    # human-review revision cycles after In Review, then escalate
+  revisions: 0        # maintained by the orchestrator
 ```
 
 The `factory:` block is structured on purpose: the orchestrator and the gardener parse it
@@ -251,6 +253,27 @@ that report to the orchestrator on resume.
   repros.
 - **PASS:** open the PR story branch → `main`, move the story issue to In Review, post a
   summary. Jake reviews a whole, evaluated story; `main` never sees a half-made one.
+
+**Close-out (after every accepted child).** The orchestrator — not the child — ticks the
+sub-issue's acceptance criteria it actually verified (the checklist is a verification
+record, not a self-report), moves the sub-issue to Done (Canceled if superseded; Done also
+tears down its worktree), removes the story's blocked-by on it, and logs `CLOSE-OUT`.
+Children end their final responses with an `## Acceptance criteria` ✓/✗ block so the
+orchestrator ticks from verified claims. Verification happens on the *merged story
+branch* (the child's branch merged locally, checks run there, reset if they fail) rather
+than inside the child's worktree — it is what ships, and cross-worktree commands may be
+denied by permissions.
+
+**Revisions (human review after In Review).** Comments from Jake — in the orchestrator's
+session, or "address the PR comments" — are *revisions*, separate from fix rounds. The
+orchestrator quotes them in the log (`REVISION <k>`), classifies each change as
+**text-only** (look/dialogue/descriptions; no exits, time flags, items, ids, landings) or
+**structural**, delegates to the Rooms generator with the comments verbatim, verifies per
+the close-out rule, and for structural changes runs a fresh `Evaluate (revision k)` child
+before finishing. Text-only revisions are self-verified (typecheck, tests, `eval:reach`,
+play route) — the orchestrator replies on each PR comment with what changed. Revisions
+don't consume `round`; they're capped by `max_revisions` (default 5), tracked as
+`revisions:` in the `factory:` block; past the cap → `NEEDS HUMAN: revisions exhausted`.
 
 ### 5.8 The orchestration log
 
@@ -449,13 +472,22 @@ each sub-issue ("use the `generate-story` skill").
 - Vocabulary follows the design and the code: *place* (persists), *era* (landing + age),
   *room* (a place in one era). Outline entries use engine landings (`2099 BA`), never
   calendar years.
+- Every child is closed out by the orchestrator: criteria ticked as a verification record,
+  sub-issue → Done, blocked-by removed (learned on the first run, where all three children
+  were left In Progress at 0/N).
+- Human-review revisions are a separate budget from evaluator fix rounds; text-only
+  revisions are self-verified by the orchestrator, structural ones re-run the evaluator
+  (the first run's orchestrator improvised exactly this split; now it's the rule).
+- The orchestrator verifies on the merged story branch, not in the child's worktree.
 
 **Open**
 
 - Can the Linear "Game Story" template pre-set the delegate, or is delegation one extra
   click per story?
-- Cyrus's git phase defaults toward the repo base branch for PRs; confirm on the first
-  run that children PR against the story branch as instructed, or adjust.
+- ~~Cyrus's git phase defaults toward the repo base branch for PRs; confirm on the first
+  run that children PR against the story branch as instructed, or adjust.~~ Confirmed on
+  the first run: children branch from and merge into the story branch; only the
+  orchestrator opens the PR to `main`.
 - Evaluator v2 candidates, in order: writing-guide compliance, item/puzzle solvability,
   time-exit symmetry. Each is a new `Evaluate` child; the orchestrator doesn't change.
 - Fan-out (parallel room generation) is explicitly out of scope for v1.

@@ -78,12 +78,23 @@ final response lists the rooms written, the harness result, and the verification
 commands: `npm run typecheck && npm test && npm run eval:reach`, plus one
 `node scripts/play.ts …` route per room.
 
-## Fix rounds
+## Your final response, every time (both phases, fix rounds, revisions)
+
+End with an **`## Acceptance criteria`** block that repeats every criterion from your
+sub-issue description and marks it `✓` or `✗` with one line of evidence each (the command
+you ran and its result, or the file/commit). The orchestrator re-verifies and ticks the
+boxes on the sub-issue from this block — it cannot tick what you did not report. Then the
+verification commands.
+
+## Fix rounds and revisions
 
 If you receive an evaluator report (verdict FAIL) as feedback: for every failure, make the
 room reachable as the report suggests (or a better way that honors the outline), re-run
 `npm run eval:reach` until it passes, add an as-built note describing the fix, commit,
-push. Your final response repeats the verification commands.
+push. If you receive **human review comments** (a revision): make exactly the requested
+changes in the writing-guide voice, keep exits/ids/time flags untouched unless the comment
+asks, add an as-built note, commit, push. Either way your final response repeats the
+verification commands and the `## Acceptance criteria` block.
 
 ## Never
 

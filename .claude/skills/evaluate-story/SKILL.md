@@ -48,9 +48,14 @@ rooms: 8  reachable: 6
 ## Notes
 <anything the playthrough saw that the harness cannot: wrong-room text, strides landing
 oddly, exits whose text contradicts the outline. Empty is fine.>
+
+## Acceptance criteria
+- ✓/✗ <each criterion from your sub-issue, verbatim> — <one line of evidence>
 ```
 
-For `PASS`, include the same header, the harness output, and the routes you played.
+For `PASS`, include the same header, the harness output, the routes you played, and the
+`## Acceptance criteria` block. The orchestrator ticks your sub-issue's boxes from that
+block after re-checking; it cannot tick what you did not report.
 
 ## Rules
 
