@@ -11,7 +11,7 @@ small engine. Read this whole file before doing anything.
 3. `design/DESIGN.md` — how the game works, including §4.4 *Place persists, time varies*.
 4. `DEVELOP.md` — code layout and commands.
 5. `ADVENTURE_FACTORY.md` — if you were spawned by the story factory (your issue has a
-   `Game Story`, `Generate`, or `Evaluate` label), this is your process. The matching
+   `Game Story`, `Plan`, `Generate`, or `Evaluate` label), this is your process. The matching
    skill in `.claude/skills/` is your playbook: `orchestrate-story`, `generate-story`,
    `evaluate-story`.
 

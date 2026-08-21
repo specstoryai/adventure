@@ -25,7 +25,7 @@ the tone notes. Written so that nothing in the issue is needed to author a room.
 ## Rooms
 - [ ] <place> · <landing> (<age>) — <one phrase of story purpose>
       as built: <exits and time exits · items/scenery that matter · what it sets up or
-      pays off · deviations from plan and why>            ← added by the detail generator
+      pays off · deviations from plan and why>            ← added by the generator
 
 ## Through-lines
 - <something that spans rooms: a traveling item, a puzzle in pieces, a PAST/FUTURE pair

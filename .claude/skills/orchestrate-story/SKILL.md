@@ -46,15 +46,15 @@ child's worktree.
    story branch.
 6. Go to §1.
 
-## 1. Outline
+## 1. Plan
 
-Create sub-issue **`Outline: <story title>`** — label `Generate`, parent = the story
+Create sub-issue **`Plan: <story title>`** — label `Plan`, parent = the story
 issue, **project = the story issue's project**, state "Todo", assignee inherited.
 Description (exactly this structure):
 
 ```
-Objective: Write design/stories/<slug>/OUTLINE.md for this story (generate-story skill, phase: outline).
-Context: The full story as written by the planner follows. max_rooms: <n>.
+Objective: Write design/stories/<slug>/OUTLINE.md for this story (plan-story skill).
+Context: The full story as written by the author follows. max_rooms: <n>.
 
 --- STORY ---
 <paste the entire story issue description, minus the factory block>
@@ -67,16 +67,16 @@ Acceptance Criteria:
 - [ ] PR opened against branch <story-branch>
 
 Dependencies: none
-Technical Notes: Use the `generate-story` skill, phase "outline". Read AGENTS.md and the three design docs first. Do not write any src/content yet.
+Technical Notes: Use the `plan-story` skill. Read AGENTS.md and the three design docs first. Do not write any src/content yet.
 
 **MANDATORY VERIFICATION REQUIREMENTS:** <the standard template from your orchestrator instructions>
 ```
 
 Then: set the story issue **blocked by** this sub-issue; spawn with
 `linear_agent_session_create(issueId)`; `ScheduleWakeup` in 20 minutes with prompt
-"deadline check: outline child"; write a log entry; end your turn.
+"deadline check: planner"; write a log entry; end your turn.
 
-## 2. On outline completion
+## 2. On plan completion
 
 1. Verify (§9): merge the child's branch into the story branch locally, run
    `npm run typecheck && npm test` there, read `OUTLINE.md`.
@@ -85,17 +85,17 @@ Then: set the story issue **blocked by** this sub-issue; spawn with
    Landings use engine vocabulary (`2099 BA`), never calendar years.
 3. Reject → `git reset --hard` the story branch to before the merge; this is a fix round:
    if `round >= max_rounds`, stop as in §6 (NEEDS HUMAN); else `round` += 1,
-   `linear_agent_give_feedback` to the outline child with the exact problems, re-arm the
+   `linear_agent_give_feedback` to the planner with the exact problems, re-arm the
    deadline, log, end turn. Accept → push the story branch, **close out the child (§10)**,
    log, go to §3.
 
-## 3. Rooms
+## 3. Generate
 
-Create sub-issue **`Rooms: <story title>`** — label `Generate`, parent, project (the
+Create sub-issue **`Generate: <story title>`** — label `Generate`, parent, project (the
 story's), "Todo", assignee inherited. Description:
 
 ```
-Objective: Write every room in design/stories/<slug>/OUTLINE.md as game data (generate-story skill, phase: detail).
+Objective: Write every room in design/stories/<slug>/OUTLINE.md as game data (generate-story skill).
 Context: The outline is the source — read it first; do not consult the story issue. Story branch: <story-branch>.
 
 Acceptance Criteria:
@@ -105,24 +105,24 @@ Acceptance Criteria:
 - [ ] PR opened against branch <story-branch>
 
 Dependencies: the outline (merged on the story branch)
-Technical Notes: Use the `generate-story` skill, phase "detail". Room id convention <place>:<landing-slug>. Register new landings oldest-first.
+Technical Notes: Use the `generate-story` skill. Room id convention <place>:<landing-slug>. Register new landings oldest-first.
 
 **MANDATORY VERIFICATION REQUIREMENTS:** <standard template>
 ```
 
 Blocked-by swap → spawn → deadline (20 min) → log → end turn.
 
-## 4. On rooms completion
+## 4. On generate completion
 
 1. Verify (§9): merge the child's branch into the story branch locally, run
    `npm run typecheck && npm test && npm run eval:reach` there; every room line in
    `OUTLINE.md` is ticked and has an as-built note (or a recorded blocker).
 2. If rooms remain unchecked (the child ran out of turns): keep the merge, push, then spawn
-   **`Rooms (continued): <story title>`** with the same description plus "start at the
+   **`Generate (continued): <story title>`** with the same description plus "start at the
    first unchecked room". A continuation that made progress (ticked at least one new room)
    is not a round; a continuation that ticked **no** new room counts as a fix round (apply
    the §6 check — something is wrong, and continuations must not loop forever). Log. End
-   turn. (Do not close out the Rooms sub-issue yet — the continuation finishes it.)
+   turn. (Do not close out the Generate sub-issue yet — the continuation finishes it.)
 3. Otherwise push the story branch, **close out the child (§10)**, log, go to §5.
 
 ## 5. Evaluate
@@ -159,11 +159,11 @@ Read the report's `verdict`.
 2. Else `round` += 1 in the story issue's `factory:` block (update the description).
    `max_rounds` is the number of fix rounds allowed after the first evaluation:
    `max_rounds: 2` means up to two fix rounds and three evaluations.
-3. Send the full report to the **Rooms** child session with
+3. Send the full report to the **generator** child session with
    `linear_agent_give_feedback` and the instruction "fix every failure in this report,
    re-run npm run eval:reach until it passes, update OUTLINE.md as-built notes, commit, and
    push to your PR". If that session no longer exists, create sub-issue
-   **`Rooms (round <round>): <one-line summary>`** (label `Generate`) with the report
+   **`Generate (round <round>): <one-line summary>`** (label `Generate`) with the report
    in the description and spawn it. Deadline, log, end turn. When it completes, verify and
    merge as in §4, then go to §5 again.
 
@@ -189,7 +189,7 @@ When a human asks for changes after the story is In Review (a comment in your se
    - **text-only** — `look`/`lookAgain`/descriptions/dialogue/titles; no exits, time
      flags, items, scenery ids, room ids, or landings touched;
    - **structural** — anything else.
-3. Delegate the fix to the Rooms generator with `linear_agent_give_feedback` (the same
+3. Delegate the fix to the generator with `linear_agent_give_feedback` (the same
    session keeps its worktree and context), with the comments verbatim plus exact
    guidance. Swap blocked-by, arm a deadline, log with the `REVISION:` marker, end turn.
 4. On completion, verify per §9. **Text-only:** your own verification is sufficient

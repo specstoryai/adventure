@@ -3,10 +3,12 @@
 *An autonomous plan → generate → evaluate loop that turns a story idea into playable
 rooms, run by Linear and CyLocal (a self-hosted Cyrus agent).*
 
-> Status: **v1 implemented (branch `factory`), awaiting its first live story.** The
-> engine gained multi-room worlds (spatial exits, time strides, validation, reachability);
-> the skills, `AGENTS.md`, harness, and setup script are in the repo; CyLocal's label
-> prompts are configured. Open questions are collected in §13.
+> Status: **v1 live — the first story (SPE-57, *A Brief Tour of the Turning House*)
+> completed end to end, including a human-review revision.** Roles: Author →
+> Orchestrator → Planner / Generator / Evaluator. The engine has multi-room worlds
+> (spatial exits, time strides, validation, reachability); the skills, `AGENTS.md`,
+> harness, and setup script are in the repo; CyLocal's label prompts are configured.
+> Open questions are collected in §13.
 
 Companion documents:
 
@@ -19,9 +21,10 @@ Companion documents:
 
 ## 1. Goal
 
-Jake writes a story. Agents turn it into rooms. Another agent proves the rooms are
-playable. If they aren't, the failure goes back to the generator with enough detail to
-fix it — without a human in the loop — until the story is done or a limit is hit.
+The author writes a story. A planner expands it into an outline; a generator turns the
+outline into rooms; an evaluator proves the rooms are playable. If they aren't, the
+failure goes back to the generator with enough detail to fix it — without a human in the
+loop — until the story is done or a limit is hit. An orchestrator runs all three.
 
 The first version is deliberately the **simplest loop that closes**: one story at a
 time, one room at a time, no fan-out, one evaluator with one question ("can a player
@@ -46,21 +49,21 @@ A story is a connected set of rooms.
  "Game Story" issue ──► session on story issue
  (label + delegate)     branch: the story branch
                         │
-                        ├─ sub-issue "Outline" ──────────► GENERATE · outline
+                        ├─ sub-issue "Plan" ─────────────► PLANNER
                         │                                   expanded story + room plan, ≤ max_rooms
                         │ ◄── child completes → parent auto-resumed with result
                         ├─ check: count ≤ limit, fits premise
                         │
-                        ├─ sub-issue "Rooms" ────────────► GENERATE · detail
+                        ├─ sub-issue "Generate" ─────────► GENERATOR
                         │                                   one room at a time, commit each,
                         │                                   design docs open the whole time
                         │ ◄── auto-resumed
                         │
-                        ├─ sub-issue "Evaluate" ─────────► EVALUATE (read-only tools)
+                        ├─ sub-issue "Evaluate" ─────────► EVALUATOR (read-only tools)
                         │                                   reachability harness + playthrough
                         │ ◄── auto-resumed with PASS / FAIL report
                         │
-                        ├─ FAIL → "Rooms (round N)" with the report as input  (cap: 3)
+                        ├─ FAIL → generator fix round with the report as input (cap: max_rounds)
                         └─ PASS → PR story branch → main, issue → In Review
 ```
 
@@ -72,11 +75,11 @@ never polls in the happy path.
 
 | Role | Who | Tools | Responsibility |
 |---|---|---|---|
-| **Planner** | Jake | Linear | Write the story issue. That's the whole job. |
+| **Author** | Jake | Linear | Write the story issue. That's the whole job. |
 | **Orchestrator** | CyLocal session on the story issue | `coordinator` preset (everything except Edit/Write) | Decompose, spawn children, check limits, route failures back, open the final PR. Log every step and every decision with its reason (§5.8). Cannot author content by construction. |
-| **Generator (outline)** | CyLocal child session | full | Expand the story into the outline and plan the rooms — each place in each era the story touches. |
-| **Generator (detail)** | CyLocal child session | full | Write each room as game data, one at a time, committing as it goes. |
-| **Evaluator** | CyLocal child session | `safe`/read-only preset | Prove every room is reachable. Report, never fix. |
+| **Planner** | CyLocal child session (`Plan`) | full | Expand the story into the outline and plan the rooms — each place in each era the story touches. Writes no game content. |
+| **Generator** | CyLocal child session (`Generate`) | full | Write each room as game data, one at a time, committing as it goes; also fix rounds and revisions. |
+| **Evaluator** | CyLocal child session (`Evaluate`) | read-only + scoped Bash | Prove every room is reachable. Report, never fix. |
 | **Gardener** | a scheduled job outside Cyrus (§10) | Linear API/MCP | Notice stuck work and nudge, cancel, or escalate. |
 
 ## 4. The Linear model
@@ -85,13 +88,14 @@ never polls in the happy path.
 Cyrus's project rule; no repository prompt. Sub-issues do **not** inherit the parent's
 project in Linear, so the orchestrator sets `project` explicitly on every sub-issue it
 creates (learned on the first live run: an un-projected sub-issue stalled on "which
-repository?"). As a belt-and-braces default while adventure is the only repo, CyLocal
-also routes the whole SpecStory team (`teamKeys: ["SPE"]`) to it.
+repository?"). A temporary `teamKeys: ["SPE"]` fallback was used during that run and has
+since been removed — routing is strictly by project.
 
 **Labels** (each selects a Cyrus prompt + tool preset, see §11):
 
 - `Game Story` — the parent issue. Orchestrator.
-- `Generate` — generator sub-issues. Builder prompt, full tools.
+- `Plan` — planner sub-issue (the outline). Builder prompt, full tools.
+- `Generate` — generator sub-issues (the rooms). Builder prompt, full tools.
 - `Evaluate` — evaluator sub-issues. Read-only tools.
 
 **The story issue** (created from a "Game Story" template):
@@ -122,7 +126,7 @@ session; Cyrus resumes it, durably, even after a restart.
 
 ## 5. The flow, step by step
 
-### 5.1 Plan (Jake)
+### 5.1 Author (Jake)
 
 Create the story issue from the template, label `Game Story`, delegate to CyLocal. Done.
 
@@ -135,13 +139,13 @@ orchestrator session. It:
 2. Reads the three design docs once, for its own judgment later.
 3. Pushes the story branch (children branch from it; Cyrus's orchestrator prompt already
    requires this before the first spawn).
-4. Creates sub-issue **"Outline: <story>"** (label `Generate`), marks the story
+4. Creates sub-issue **"Plan: <story>"** (label `Plan`), marks the story
    blocked-by it, spawns a child session on it, schedules a deadline wakeup (§10), and
    ends its turn.
 
-### 5.3 Generate — outline
+### 5.3 Plan — the outline
 
-The outline child reads the story and the design docs, and writes
+The planner reads the story and the design docs, and writes
 `design/stories/<slug>/OUTLINE.md`. The outline is the story's **working bible**: it
 must contain and expand the original story so that every later generator can work from
 the outline alone and never has to go back to the Linear issue.
@@ -172,27 +176,27 @@ places, a PAST/FUTURE pair that must line up. One line each, updated as rooms la
 <Empty at first. Filled only as a last resort — see §5.5.>
 ```
 
-The `## Story` section is the expansion; the room lines stay one line each — the place's
+The `## Story` section is the planner's expansion; the room lines stay one line each — the place's
 stable id, the landing (and age name where it helps), and a phrase of story purpose —
 and do not justify themselves against the design docs. That grounding happens when each
 room is written (§5.5), and compliance is a later evaluator's job (§13). Landings and age
 names use the engine's own vocabulary (`Room.landing`, `Room.age`), never calendar years.
 
-The outline child commits, opens a PR against the story branch, and completes. Cyrus
+The planner commits, opens a PR against the story branch, and completes. Cyrus
 resumes the orchestrator with the result.
 
 ### 5.4 Orchestrate — check the outline
 
 Cheap, mechanical: count ≤ `max_rooms`; every entry has an id, a landing, and a
 purpose; the `## Story` section carries everything the issue said and reads as one
-story — a generator could work from it without the issue. If it fails, re-spawn the outline child with the reason (this
+story — a generator could work from it without the issue. If it fails, send the plan back to the planner with the reason (this
 counts as a round). If it passes, merge the PR into the story branch, create sub-issue
-**"Rooms: <story>"** (label `Generate`), swap the blocked-by, spawn, set deadline, end
+**"Generate: <story>"** (label `Generate`), swap the blocked-by, spawn, set deadline, end
 turn.
 
-### 5.5 Generate — detail
+### 5.5 Generate — the rooms
 
-The detail child works the outline **top to bottom, one room per cycle**:
+The generator works the outline **top to bottom, one room per cycle**:
 
 1. Read the outline — `## Story`, `## Through-lines`, and the neighbors' as-built notes — and
    the relevant design docs for this room (writing guide is law for all text). The
@@ -216,7 +220,7 @@ Non-negotiables, also stated in the repo's `AGENTS.md` so every session sees the
   can be written. Only then, if a genuine gap remains, record the blocker in the outline
   line and continue to the next room. A blocker is a last resort, never a first response.
 - Commit after every room. A session that hits its turn ceiling loses nothing; the
-  orchestrator spawns **"Rooms (continued)"** pointing at the next unchecked entry.
+  orchestrator spawns **"Generate (continued)"** pointing at the next unchecked entry.
 
 When every entry is ticked and annotated it opens a PR against the story branch and
 completes. Fix rounds (§5.7) follow the same procedure and leave the same kind of
@@ -246,9 +250,9 @@ that report to the orchestrator on resume.
   the number of fix rounds after the first evaluation, so `max_rounds: 2` means up to two
   fixes and three evaluations; outline rejections and zero-progress continuations count
   as fix rounds, ordinary continuations after a turn ceiling do not — and
-  hand the full report back to the Rooms generator — preferably by re-prompting its
+  hand the full report back to the generator — preferably by re-prompting its
   existing session (`linear_agent_give_feedback`, which keeps its worktree and context),
-  or, if that session is gone, by creating **"Rooms (round N): <one-line summary>"** with
+  or, if that session is gone, by creating **"Generate (round N): <one-line summary>"** with
   the report in the description — and go to §5.5. Either way the generator now has exact
   repros.
 - **PASS:** open the PR story branch → `main`, move the story issue to In Review, post a
@@ -268,7 +272,7 @@ denied by permissions.
 session, or "address the PR comments" — are *revisions*, separate from fix rounds. The
 orchestrator quotes them in the log (`REVISION <k>`), classifies each change as
 **text-only** (look/dialogue/descriptions; no exits, time flags, items, ids, landings) or
-**structural**, delegates to the Rooms generator with the comments verbatim, verifies per
+**structural**, delegates to the generator with the comments verbatim, verifies per
 the close-out rule, and for structural changes runs a fresh `Evaluate (revision k)` child
 before finishing. Text-only revisions are self-verified (typecheck, tests, `eval:reach`,
 play route) — the orchestrator replies on each PR comment with what changed. Revisions
@@ -329,7 +333,8 @@ mandatory, not optional.
 |---|---|
 | `AGENTS.md` | The non-negotiables every session must obey (read design docs first; commit per room; never stop before goal/limit; PR against the story branch). Agent-agnostic by name; Claude-based sessions (which is what CyLocal runs) load `CLAUDE.md`, so keep `CLAUDE.md` as a symlink to `AGENTS.md`. |
 | `.claude/skills/orchestrate-story/` | The orchestrator's operating procedure: sub-issue templates, the outline check, rounds, deadlines, the log. Layers on Cyrus's built-in orchestrator prompt. |
-| `.claude/skills/generate-story/` | The generator playbook (outline format, per-room procedure, data shape, checks, fix rounds). |
+| `.claude/skills/plan-story/` | The planner playbook (the expanded Story section, the room plan within `max_rooms`, through-lines; writes no game content). |
+| `.claude/skills/generate-story/` | The generator playbook (per-room procedure, data shape, checks, as-built notes, fix rounds, revisions). |
 | `.claude/skills/evaluate-story/` | The evaluator playbook (run harness, play routes, report format). |
 | `scripts/eval-reach.ts` + `npm run eval:reach` | The reachability harness. Deterministic; exit 1 on any unreachable room; `--json` for machines. |
 | `scripts/play.ts` | Scripted playthrough through the real engine (`--expect <room id>` exits 1 if the route doesn't land there). The evaluator's second layer; it has no Write tool, so this script exists. |
@@ -376,9 +381,9 @@ without re-deriving anything.
 
 | Limit | Where it lives | Enforced by |
 |---|---|---|
-| `max_rooms` | story issue `factory:` block | outline check (§5.4); detail generator never writes beyond the outline |
+| `max_rooms` | story issue `factory:` block | outline check (§5.4); the generator never writes beyond the outline |
 | `max_rounds` | story issue | orchestrator on every FAIL; gardener as backstop |
-| per-session turn ceiling | Cyrus (200 turns per phase) | not a stop — a *continuation*: commit-per-room + "Rooms (continued)" |
+| per-session turn ceiling | Cyrus (200 turns per phase) | not a stop — a *continuation*: commit-per-room + "Generate (continued)" |
 | deadline per child | orchestrator `ScheduleWakeup` | §10 |
 
 The loop always ends in one of three states: **In Review** (PASS), **needs human**
