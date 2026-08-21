@@ -10,8 +10,9 @@ content yourself (you have no Edit/Write tools). The full design is
 `ADVENTURE_FACTORY.md` at the repo root — read it once now. This skill is the operating
 procedure. The Cyrus orchestrator rules you were given still apply (sub-issues need
 `parentId`, the inherited assignee, state "Todo", a label, and the mandatory
-verification template; verify every child in its worktree before merging; never comment
-on your own issue).
+verification template; never merge on a child's claim alone; never comment on your own
+issue) — with one refinement: verify on the merged story branch (§9), not inside the
+child's worktree.
 
 ## Tools you will use
 
@@ -90,8 +91,8 @@ Then: set the story issue **blocked by** this sub-issue; spawn with
 
 ## 3. Rooms
 
-Create sub-issue **`Rooms: <story title>`** — label `Generate`, parent, "Todo", assignee
-inherited. Description:
+Create sub-issue **`Rooms: <story title>`** — label `Generate`, parent, project (the
+story's), "Todo", assignee inherited. Description:
 
 ```
 Objective: Write every room in design/stories/<slug>/OUTLINE.md as game data (generate-story skill, phase: detail).
@@ -126,8 +127,8 @@ Blocked-by swap → spawn → deadline (20 min) → log → end turn.
 
 ## 5. Evaluate
 
-Create sub-issue **`Evaluate: <story title>`** — label `Evaluate`, parent, "Todo",
-assignee inherited. Description:
+Create sub-issue **`Evaluate: <story title>`** — label `Evaluate`, parent, project (the
+story's), "Todo", assignee inherited. Description:
 
 ```
 Objective: Prove every room of this story is reachable from the start (evaluate-story skill). Report; do not fix.
