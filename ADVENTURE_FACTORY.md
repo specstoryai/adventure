@@ -44,7 +44,7 @@ A story is a connected set of rooms.
 ## 2. The loop at a glance
 
 ```
- Jake                   CyLocal orchestrator               child sessions (CyLocal)
+ Human                   CyLocal orchestrator               child sessions (CyLocal)
  ────                   ────────────────────               ────────────────────────
  "Game Story" issue ──► session on story issue
  (label + delegate)     branch: the story branch
@@ -75,7 +75,7 @@ never polls in the happy path.
 
 | Role | Who | Tools | Responsibility |
 |---|---|---|---|
-| **Author** | Jake | Linear | Write the story issue. That's the whole job. |
+| **Author** | Human | Linear | Write the story issue. That's the whole job. |
 | **Orchestrator** | CyLocal session on the story issue | `coordinator` preset (everything except Edit/Write) | Decompose, spawn children, check limits, route failures back, open the final PR. Log every step and every decision with its reason (§5.8). Cannot author content by construction. |
 | **Planner** | CyLocal child session (`Plan`) | full | Expand the story into the outline and plan the rooms — each place in each era the story touches. Writes no game content. |
 | **Generator** | CyLocal child session (`Generate`) | full | Write each room as game data, one at a time, committing as it goes; also fix rounds and revisions. |
@@ -101,7 +101,7 @@ since been removed — routing is strictly by project.
 **The story issue** (created from a "Game Story" template):
 
 ```
-<story premise — a few paragraphs, tone notes, anything Jake wants honored>
+<story premise — a few paragraphs, tone notes, anything Human wants honored>
 
 ---
 factory:
@@ -121,12 +121,12 @@ branch, §6) and carry a label. The story issue is marked **blocked-by** whichev
 sub-issue is active, which lets Cyrus park and wake the parent on state change as a
 second path besides session completion (§10).
 
-**Comments** on a session's thread are how anyone — Jake, the gardener — re-prompts a
+**Comments** on a session's thread are how anyone — Human, the gardener — re-prompts a
 session; Cyrus resumes it, durably, even after a restart.
 
 ## 5. The flow, step by step
 
-### 5.1 Author (Jake)
+### 5.1 Author (Human)
 
 Create the story issue from the template, label `Game Story`, delegate to CyLocal. Done.
 
@@ -256,7 +256,7 @@ that report to the orchestrator on resume.
   the report in the description — and go to §5.5. Either way the generator now has exact
   repros.
 - **PASS:** open the PR story branch → `main`, move the story issue to In Review, post a
-  summary. Jake reviews a whole, evaluated story; `main` never sees a half-made one.
+  summary. Human reviews a whole, evaluated story; `main` never sees a half-made one.
 
 **Close-out (after every accepted child).** The orchestrator — not the child — ticks the
 sub-issue's acceptance criteria it actually verified (the checklist is a verification
@@ -268,7 +268,7 @@ branch* (the child's branch merged locally, checks run there, reset if they fail
 than inside the child's worktree — it is what ships, and cross-worktree commands may be
 denied by permissions.
 
-**Revisions (human review after In Review).** Comments from Jake — in the orchestrator's
+**Revisions (human review after In Review).** Comments from Human — in the orchestrator's
 session, or "address the PR comments" — are *revisions*, separate from fix rounds. The
 orchestrator quotes them in the log (`REVISION <k>`), classifies each change as
 **text-only** (look/dialogue/descriptions; no exits, time flags, items, ids, landings) or
@@ -387,7 +387,7 @@ without re-deriving anything.
 | deadline per child | orchestrator `ScheduleWakeup` | §10 |
 
 The loop always ends in one of three states: **In Review** (PASS), **needs human**
-(rounds exhausted or a blocker the gardener couldn't clear), or **canceled** by Jake.
+(rounds exhausted or a blocker the gardener couldn't clear), or **canceled** by Human.
 
 ## 10. When sessions don't complete cleanly
 
