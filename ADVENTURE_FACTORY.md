@@ -110,6 +110,7 @@ factory:
   round: 0            # maintained by the orchestrator
   max_revisions: 5    # human-review revision cycles after In Review, then escalate
   revisions: 0        # maintained by the orchestrator
+  evaluate: true      # false = run Plan and Generate, open the PR, stop before the evaluator
 ```
 
 The `factory:` block is structured on purpose: the orchestrator and the gardener parse it
@@ -240,6 +241,15 @@ evaluator has read-only tools: it cannot change content, by construction. Two la
 
 It ends with a structured report (§8) as its final response and completes. Cyrus hands
 that report to the orchestrator on resume.
+
+### 5.6a Stopping before evaluation
+
+With `evaluate: false` in the `factory:` block the orchestrator runs Plan and Generate,
+opens the PR to `main`, moves the story to In Review, and stops with a
+`STOPPED BEFORE EVALUATION` log entry. This is for a repo whose evaluator role is not set
+up yet (labels, tool preset, `evaluate-story` skill), and for teaching: play the story by
+hand first, then set `evaluate: true` and comment `run the evaluator` in the
+orchestrator's session — it resumes at §5.6 and, on PASS, updates the existing PR.
 
 ### 5.7 Close the loop
 

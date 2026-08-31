@@ -33,8 +33,10 @@ child's worktree.
 
 1. Read the story issue. Parse the `factory:` block at the bottom of its description:
    `max_rooms` (default 8), `max_rounds` (default 3), `round` (default 0),
-   `max_revisions` (default 5), `revisions` (default 0). If the block or a key is missing,
-   use the defaults and write the full block into the issue description.
+   `max_revisions` (default 5), `revisions` (default 0), `evaluate` (default true). If the
+   block or a key is missing, use the defaults and write the full block into the issue
+   description. `evaluate: false` means: run Plan and Generate, open the PR, and stop
+   **before** the evaluator (§4a) — used when the evaluator role is not set up yet.
 2. Derive the story slug (kebab-case of the title, ≤ 40 chars). Paths:
    `design/stories/<slug>/OUTLINE.md` and `design/stories/<slug>/LOG.md`.
 3. Read `design/UNIVERSE.md`, `design/DESIGN.md`, `design/WRITING-GUIDE.md` once, for
@@ -123,7 +125,20 @@ Blocked-by swap → spawn → deadline (20 min) → log → end turn.
    is not a round; a continuation that ticked **no** new room counts as a fix round (apply
    the §6 check — something is wrong, and continuations must not loop forever). Log. End
    turn. (Do not close out the Generate sub-issue yet — the continuation finishes it.)
-3. Otherwise push the story branch, **close out the child (§10)**, log, go to §5.
+3. Otherwise push the story branch, **close out the child (§10)**, log, then: if
+   `evaluate` is `false` go to §4a; else go to §5.
+
+## 4a. Stop before evaluation (`evaluate: false`)
+
+1. `gh pr create --base main --head <story-branch>` with a summary and a link to the log
+   (skip if the PR already exists).
+2. Move the story issue to "In Review".
+3. Log entry, event `STOPPED BEFORE EVALUATION (evaluate: false)`; the same text is your
+   final response, ending with: "To evaluate this story later, set `evaluate: true` in
+   the `factory:` block and comment `run the evaluator` in this session."
+4. Stop. When you are later resumed by a comment asking to evaluate (and `evaluate` is
+   now `true`), go to §5 — the PR already exists, so on PASS §6 updates it rather than
+   opening a new one.
 
 ## 5. Evaluate
 
@@ -170,7 +185,8 @@ Read the report's `verdict`.
 **PASS:**
 1. **Close out the evaluator child (§10)** — its criteria are verified by the report
    itself (harness output present, routes played, format correct).
-2. `gh pr create --base main --head <story-branch>` with a summary and a link to the log.
+2. `gh pr create --base main --head <story-branch>` with a summary and a link to the log
+   (if the PR already exists from §4a, push and comment on it instead).
 3. Move the story issue to "In Review".
 4. Final log entry; final response summarizing rooms, rounds, PR.
 
@@ -179,6 +195,10 @@ once its report has been handed on — a later evaluation is a new `Evaluate` su
 (`Evaluate (round <round>): <story title>`), not a re-run of the old one.
 
 ## 7. Revisions — human review after In Review
+
+A comment that asks you to **evaluate** (`run the evaluator`, `evaluate now`) is not a
+revision: confirm `evaluate: true` in the `factory:` block (set it if the comment says
+so) and go to §5.
 
 When a human asks for changes after the story is In Review (a comment in your session, or
 "address the PR review comments"), that is a **revision**, not a fix round:
