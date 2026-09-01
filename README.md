@@ -25,4 +25,4 @@ Type `HELP` at the prompt. See [DEVELOP.md](DEVELOP.md) for the code layout and 
 
 ## Deployment
 
-_Coming soon._ How Everwyn is built, hosted, and released.
+**Coming soon.** How Everwyn is built, hosted, and released.
