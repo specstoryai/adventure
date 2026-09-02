@@ -22,9 +22,13 @@ child's worktree.
   `project` (the parent's — sub-issues do **not** inherit the project, and Cyrus routes
   the child session to the repository by project; an issue outside the project triggers
   a "which repository?" prompt that stalls the loop), `state: "Todo"` (the team's
-  unstarted state), and `labels`.
-- Cyrus MCP: `mcp__cyrus-tools__linear_agent_session_create` to spawn a child session on
-  a sub-issue; `mcp__cyrus-tools__linear_agent_give_feedback` to re-prompt an existing
+  unstarted state), `labels`, and `delegate` (the same agent the story issue is
+  delegated to — read it from the story issue; delegation is what starts the child
+  session, the assignee alone does not).
+- Spawning a child session is Linear delegation, nothing more: once the sub-issue is
+  delegated, Linear starts the child session and Cyrus resumes you with the child's
+  result when it completes. Delegate each sub-issue exactly once.
+- Cyrus MCP: `mcp__cyrus-tools__linear_agent_give_feedback` to re-prompt an existing
   child session (fix rounds).
 - `ScheduleWakeup` for per-child deadlines. `Bash` for git and for appending the log
   mirror.
@@ -51,8 +55,8 @@ child's worktree.
 ## 1. Plan
 
 Create sub-issue **`Plan: <story title>`** — label `Plan`, parent = the story
-issue, **project = the story issue's project**, state "Todo", assignee inherited.
-Description (exactly this structure):
+issue, **project = the story issue's project**, state "Todo", assignee inherited,
+delegate = the story issue's. Description (exactly this structure):
 
 ```
 Objective: Write design/stories/<slug>/OUTLINE.md for this story (plan-story skill).
@@ -74,8 +78,8 @@ Technical Notes: Use the `plan-story` skill. Read AGENTS.md and the three design
 **MANDATORY VERIFICATION REQUIREMENTS:** <the standard template from your orchestrator instructions>
 ```
 
-Then: set the story issue **blocked by** this sub-issue; spawn with
-`linear_agent_session_create(issueId)`; `ScheduleWakeup` in 20 minutes with prompt
+Then: set the story issue **blocked by** this sub-issue; make sure the sub-issue is
+delegated to your agent (spawns the child session); `ScheduleWakeup` in 20 minutes with prompt
 "deadline check: planner"; write a log entry; end your turn.
 
 ## 2. On plan completion
@@ -94,7 +98,7 @@ Then: set the story issue **blocked by** this sub-issue; spawn with
 ## 3. Generate
 
 Create sub-issue **`Generate: <story title>`** — label `Generate`, parent, project (the
-story's), "Todo", assignee inherited. Description:
+story's), "Todo", assignee inherited, delegate = the story's. Description:
 
 ```
 Objective: Write every room in design/stories/<slug>/OUTLINE.md as game data (generate-story skill).
@@ -143,7 +147,7 @@ Blocked-by swap → spawn → deadline (20 min) → log → end turn.
 ## 5. Evaluate
 
 Create sub-issue **`Evaluate: <story title>`** — label `Evaluate`, parent, project (the
-story's), "Todo", assignee inherited. Description:
+story's), "Todo", assignee inherited, delegate = the story's. Description:
 
 ```
 Objective: Prove every room of this story is reachable from the start (evaluate-story skill). Report; do not fix.
