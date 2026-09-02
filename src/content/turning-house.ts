@@ -14,12 +14,13 @@ export const turningHouse: Room = {
     "You are in the common room of an inn at a crossroads, low under black beams, " +
     "a fire going against a cold the season has not earned. The walls are drystone, " +
     "laid without mortar, and have outlasted the road they watch. A barred door holds " +
-    "off the night; a stair climbs into the dark.\n" +
+    "off the night, an iron lantern unlit on a nail beside it; one stair climbs into " +
+    "the dark and a second goes down under the floor.\n" +
     "The landlady works the fire and does not ask your business.\n" +
     "On the long table a brass lamp stands unlit, and beside it a coin lies face down.",
   lookAgain:
     "The common room, low and warm. A brass lamp on the table, a coin face down " +
-    "beside it, and the landlady at her fire.",
+    "beside it, the iron lantern on its nail by the door, and the landlady at her fire.",
   time: {
     // The House turns in every age — but only one landing is built in this slice,
     // so the years have nowhere to carry you yet. The parser declines in voice.
@@ -51,6 +52,14 @@ export const turningHouse: Room = {
       takeable: false,
       takeRefusal: "Some other Traveler left it face down. You let it lie.",
       read: "The coin's face is down, and that is the whole of what it says.",
+      start: "room",
+    },
+    {
+      id: "lantern",
+      nouns: ["lantern", "iron lantern"],
+      description: "Iron and plain, unlit, and the glass is warm.",
+      takeable: false,
+      takeRefusal: "You leave it on its nail. The House hangs things where it wants them.",
       start: "room",
     },
   ],
@@ -88,6 +97,12 @@ export const turningHouse: Room = {
       description: "The stair climbs to rooms with a pair of boots outside each one.",
     },
     {
+      id: "down-stair",
+      nouns: ["second stair", "down stair", "lower stair", "narrow stair", "floor"],
+      description:
+        "Narrow steps under the floor, and what comes up them is noise and cold air off water.",
+    },
+    {
       id: "table",
       nouns: ["table", "long table"],
       description: "A long table, scrubbed pale, that seems to have been used recently.",
@@ -98,4 +113,5 @@ export const turningHouse: Room = {
       description: "The high roads were laid to outlast their makers. They are winning.",
     },
   ],
+  exits: { down: "mill-race:2099-ba" },
 };

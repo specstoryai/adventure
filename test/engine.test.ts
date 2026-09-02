@@ -1,10 +1,13 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Game } from "../src/engine.ts";
-import { turningHouse } from "../src/content/turning-house.ts";
+import { world } from "../src/content/index.ts";
 
+// The Turning House is the start room, so these still exercise it — but it now
+// has a DOWN exit, and a room with an exit can only be validated as part of the
+// world that holds the room it points at.
 function newGame() {
-  return new Game(turningHouse);
+  return new Game(world);
 }
 
 test("intro shows the room title and first look", () => {
