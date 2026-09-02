@@ -40,14 +40,19 @@ export const millRace2099Ba: Room = {
     },
     {
       id: "wheel-2099",
-      nouns: ["wheel", "waterwheel", "water wheel", "paddles", "paddle"],
+      nouns: ["wheel", "waterwheel", "water wheel", "paddles", "paddle", "hub"],
       description: "Oak paddles, a hand's breadth of each under water at every turn.",
     },
     {
       id: "race-2099",
       nouns: ["race", "mill-race", "mill race", "water", "channel"],
       description:
-        "The water comes in under the wall, does its work, and does not linger to be looked at.",
+        "The water comes in fast, does its work, and does not linger to be looked at.",
+    },
+    {
+      id: "house-above-2099",
+      nouns: ["house", "turning house", "common room", "ceiling"],
+      description: "The common room is over your head. From down here it is a floor, and it creaks.",
     },
     {
       id: "ledge-2099",

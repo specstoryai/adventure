@@ -56,7 +56,7 @@ export const turningHouse: Room = {
     },
     {
       id: "lantern",
-      nouns: ["lantern", "iron lantern"],
+      nouns: ["lantern", "iron lantern", "nail", "glass"],
       description: "Iron and plain, unlit, and the glass is warm.",
       takeable: false,
       takeRefusal: "You leave it on its nail. The House hangs things where it wants them.",

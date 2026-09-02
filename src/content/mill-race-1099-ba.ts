@@ -27,7 +27,7 @@ export const millRace1099Ba: Room = {
   items: [
     {
       id: "mill-lantern",
-      nouns: ["lantern", "iron lantern"],
+      nouns: ["lantern", "iron lantern", "glass"],
       description: "Iron and plain, unlit, and the glass is warm.",
       takeable: false,
       takeRefusal: "You leave it on its nail. It has hung there a while.",
@@ -47,8 +47,8 @@ export const millRace1099Ba: Room = {
     },
     {
       id: "wheel-1099",
-      nouns: ["wheel", "waterwheel", "water wheel", "paddles", "paddle"],
-      description: "Grey oak, dry to the hub, and nothing left in the buckets but leaves.",
+      nouns: ["wheel", "waterwheel", "water wheel", "paddles", "paddle", "hub"],
+      description: "Grey oak, dry to the hub, and leaves where the water was.",
     },
     {
       id: "race-1099",
@@ -58,7 +58,7 @@ export const millRace1099Ba: Room = {
     },
     {
       id: "brick-1099",
-      nouns: ["brick", "bricks", "brickwork", "ceiling", "stair", "stairs", "steps"],
+      nouns: ["brick", "bricks", "brickwork", "ceiling", "stair", "stairs", "steps", "house"],
       description: "Brick laid flush and well mortared, and worked from the other side.",
     },
     {
