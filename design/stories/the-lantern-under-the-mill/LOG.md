@@ -1,0 +1,14 @@
+# Orchestration log — The Lantern Under the Mill
+
+Mirror of the Linear document "Orchestration log — The Lantern Under the Mill"
+(https://linear.app/specfactory/document/orchestration-log-the-lantern-under-the-mill-9549e0d29464).
+
+Story issue: SPE-5 · branch `cytest/spe-5-the-lantern-under-the-mill` · slug `the-lantern-under-the-mill`
+
+## 2026-09-02 16:49 UTC · step 1 · START
+- event:    orchestrator session started on SPE-5 (Game Story)
+- saw:      story: a warm lantern at the turning house at dusk, a stair down to the mill-race; earlier age stair open and race loud, later age stair bricked and wheel silent. factory block parsed: max_rooms 2, max_rounds 1, round 0, max_revisions 1, revisions 0, evaluate true.
+- decision: run the standard loop — Plan, then Generate, then Evaluate (evaluate is true).
+- reason:   per ADVENTURE_FACTORY.md §5.2; the factory block is complete, so no defaults needed to be written back to the issue.
+- action:   read ADVENTURE_FACTORY.md and the three design docs; pushed story branch to origin; created the log document; slug derived as `the-lantern-under-the-mill`.
+- next:     create the Plan sub-issue and delegate it to CyTest.
