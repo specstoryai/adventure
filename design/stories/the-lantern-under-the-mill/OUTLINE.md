@@ -149,7 +149,24 @@ Leave the Turning House's `time` flags at `false`/`false`: no face of the House 
 
 ## Rooms
 
-- [ ] mill-race · 2099 BA (the High Masonry) — the loud working race, and the empty sooted nail
+- [x] mill-race · 2099 BA (the High Masonry) — the loud working race, and the empty sooted nail
+  - as built: `src/content/mill-race-2099-ba.ts`. `exits: { up: "turning-house" }`,
+    `time: { past: false, future: true }`, no items. Scenery: `nail-2099` ("An iron nail in a
+    ring of soot, and nothing hanging on it." — the line 1099 BA answers), `mill-beam` ("The
+    nail is not as old as the beam."), `wheel-2099`, `race-2099`, `ledge-2099` (one worn track,
+    stair to water), `mill-stair`. The noise "would cover a shout, or a door" carries the
+    outline's someone-left-unheard beat without naming anyone. EXAMINE LANTERN here answers
+    "You can't see any such thing." — the absence, delivered by the engine.
+  - as built (Turning House touches, all three and no more): `exits: { down: "mill-race:2099-ba" }`;
+    item `lantern` (`takeable: false`, refusal "You leave it on its nail. The House hangs things
+    where it wants them.", description "Iron and plain, unlit, and the glass is warm."); the
+    door/stair sentence revised in place to carry the lantern clause and the second stair, with
+    new scenery `down-stair` (nouns `second stair` / `down stair` / `lower stair` /
+    `narrow stair` / `floor`, kept off the existing `stair` entry's nouns so the climbing stair
+    still answers to STAIR). `lookAgain` now lists the lantern. `time` left `false`/`false`.
+  - as built (test fixture): `test/engine.test.ts` built its `Game` from the `turningHouse`
+    room alone, and `validateWorld` rejects a room whose exit points outside its world, so the
+    fixture is now the shipped `world`. Same start room, same assertions, no engine change.
 - [ ] mill-race · 1099 BA (the Long Noon) — bricked stair, stopped wheel, the lantern still on the nail
 
 ## Through-lines
@@ -158,20 +175,23 @@ Leave the Turning House's `time` flags at `false`/`false`: no face of the House 
   `mill-race:2099-ba` → `FUTURE` → `mill-race:1099-ba`. Both new rooms are reachable in two
   moves; `npm run eval:reach` should report routes `DOWN` and `DOWN, FUTURE`. The `DOWN`
   exit on `turning-house` and the `1099 BA` entry in `world.landings` are both required for
-  this to hold — planned, not yet built.
+  this to hold. `DOWN` built; the `1099 BA` landing lands with the second room.
 - **The PAST/FUTURE pair.** `mill-race:2099-ba.time.future` and
   `mill-race:1099-ba.time.past` must both be `true`, and both rooms must carry the same
   `place: "mill-race"`, or `strideTarget` finds nothing and the stride fails in place.
-  Planned, not yet built.
+  `future: true` built; the return `past: true` lands with the second room.
 - **The nail, empty then filled.** The soot-ringed nail on the beam is described in
   `mill-race:2099-ba` and answered in `mill-race:1099-ba`. Same beam, same nail, recognizably
-  the same words. This is the story's only payoff and it lives across both rooms. Planned.
+  the same words. This is the story's only payoff and it lives across both rooms. Half built:
+  2099 BA says "An iron nail in a ring of soot, and nothing hanging on it," in both the room
+  `look` and the `nail-2099` scenery. 1099 BA must answer it in the same words.
 - **The lantern's three appearances.** Turning House (hangs, warm) → mill-race 2099 BA
   (absent; the nail is empty) → mill-race 1099 BA (hangs, warm). Non-takeable at every
   appearance, so it can never be in two places at once and no era-state has to be
-  reconciled. Planned.
+  reconciled. First two built. The absence in 2099 BA is delivered by the engine's own
+  "You can't see any such thing.", which is the right amount of nothing.
 - **The wheel, turning then stopped.** The one contrast the time-step earns; keep it to the
-  two lines the writing guide allows. Planned.
+  two lines the writing guide allows. Turning face built (`wheel-2099`).
 - **Known cosmetic edge, no action required.** The engine's closed-stride refusal is
   House-specific ("Tonight the House holds still"), so `PAST` at `mill-race:2099-ba` reads a
   little oddly. 2099 BA is the oldest landing and there is nothing back there either way.
