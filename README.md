@@ -22,3 +22,7 @@ Type `HELP` at the prompt. See [DEVELOP.md](DEVELOP.md) for the code layout and 
   Travelers, the landings. Core canon; edited only by us.
 - [Writing guide](design/WRITING-GUIDE.md) — the Zork-derived style all game text
   must follow.
+
+## Deployment
+
+**Coming soon.** How Everwyn is built, hosted, and released.
