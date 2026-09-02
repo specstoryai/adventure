@@ -28,3 +28,11 @@ Story issue: SPE-5 · branch `cytest/spe-5-the-lantern-under-the-mill` · slug `
 - reason:   per orchestrate-story §8 — the child is three minutes old and visibly working (it named what it is waiting on), so acting now would interrupt real progress. The shortened deadline is because the turn ended handing off to a background subagent, which is exactly how a child can wedge; 10 minutes is enough to distinguish progress from a stall without wasting a fix round.
 - action:   no sub-issue changes; deadline re-armed 10m.
 - next:     at ~17:04 UTC, re-check SPE-6 for a branch or commits; if still nothing, nudge the session with linear_agent_give_feedback to draft the outline directly from the design docs.
+
+## 2026-09-02 16:59 UTC · step 4 · OUTLINE ACCEPTED · CLOSE-OUT SPE-6 · SPAWN GENERATOR
+- event:    SPE-6 completed with PR #22; outline verified on the merged story branch
+- saw:      OUTLINE.md, 183 lines. Sections Story / Rooms / Through-lines / Blockers in order; exactly 2 room lines (2 of max 2), both `mill-race`, landings `2099 BA` (the High Masonry) and `1099 BA` (the Long Noon), engine vocabulary throughout; Blockers empty. Checks on the merged branch: typecheck exit 0, 36 tests pass 0 fail, eval:reach verdict PASS rooms 1 reachable 1.
+- decision: accept the outline and spawn the generator.
+- reason:   per orchestrate-story §2 — count is at the cap but not over it, every room line carries place, landing, age and purpose, and the Story section quotes the author whole and expands it into beats, per-era purpose and binding tone notes, so a generator needs nothing from Linear. eval:reach reporting 1 room is correct for a plan-only change: no game content ships in this PR. Also checked the era direction the author specified — 2099 BA is the earlier, louder age and 1099 BA the later, bricked one, so FUTURE runs the right way.
+- action:   merged origin/cytest/spe-6-plan-the-lantern-under-the-mill into the story branch (merge f66ecd4) and pushed; PR #22 now MERGED. CLOSE-OUT SPE-6: 5/5 criteria ticked, state Done, blocked-by removed from SPE-5. SPE-7 "Generate: The Lantern Under the Mill" created (label Generate, project adventure, Todo, assignee Jake Levirne, delegate CyTest); SPE-7 blocks SPE-5; deadline set 20m.
+- next:     waiting for SPE-7 to complete, or the 20-minute deadline wakeup.
