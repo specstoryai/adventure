@@ -149,8 +149,41 @@ Leave the Turning House's `time` flags at `false`/`false`: no face of the House 
 
 ## Rooms
 
-- [ ] mill-race · 2099 BA (the High Masonry) — the loud working race, and the empty sooted nail
-- [ ] mill-race · 1099 BA (the Long Noon) — bricked stair, stopped wheel, the lantern still on the nail
+- [x] mill-race · 2099 BA (the High Masonry) — the loud working race, and the empty sooted nail
+  - as built: `src/content/mill-race-2099-ba.ts`. `exits: { up: "turning-house" }`,
+    `time: { past: false, future: true }`, no items. Scenery: `nail-2099` ("An iron nail in a
+    ring of soot, and nothing hanging on it." — the line 1099 BA answers), `mill-beam` ("The
+    nail is not as old as the beam."), `wheel-2099`, `race-2099`, `ledge-2099` (one worn track,
+    stair to water), `mill-stair`. The noise "would cover a shout, or a door" carries the
+    outline's someone-left-unheard beat without naming anyone. EXAMINE LANTERN here answers
+    "You can't see any such thing." — the absence, delivered by the engine.
+  - as built (Turning House touches, all three and no more): `exits: { down: "mill-race:2099-ba" }`;
+    item `lantern` (`takeable: false`, refusal "You leave it on its nail. The House hangs things
+    where it wants them.", description "Iron and plain, unlit, and the glass is warm."); the
+    door/stair sentence revised in place to carry the lantern clause and the second stair, with
+    new scenery `down-stair` (nouns `second stair` / `down stair` / `lower stair` /
+    `narrow stair` / `floor`, kept off the existing `stair` entry's nouns so the climbing stair
+    still answers to STAIR). `lookAgain` now lists the lantern. `time` left `false`/`false`.
+  - as built (test fixture): `test/engine.test.ts` built its `Game` from the `turningHouse`
+    room alone, and `validateWorld` rejects a room whose exit points outside its world, so the
+    fixture is now the shipped `world`. Same start room, same assertions, no engine change.
+- [x] mill-race · 1099 BA (the Long Noon) — bricked stair, stopped wheel, the lantern still on the nail
+  - as built: `src/content/mill-race-1099-ba.ts`. `landing: "1099 BA"`, `age: "the Long Noon"`,
+    no `exits` (the stair is brick), `time: { past: true, future: false }`. One item,
+    `mill-lantern` (id distinct from the Turning House `lantern`, per `validateWorld`):
+    `takeable: false`, description "Iron and plain, unlit, and the glass is warm." — the same
+    sentence the Turning House lantern carries, word for word, because the recognition is the
+    payoff. Refusal: "You leave it on its nail. It has hung there a while."
+  - as built (the nail): `nail-1099` reads "An iron nail in a ring of soot, and the lantern
+    hanging on it." against 2099 BA's "…and nothing hanging on it." Same clause, one word
+    changed. `mill-beam-1099` answers 2099's "The nail is not as old as the beam" with "The
+    nail has not moved."
+  - as built (the Long Noon in one clause): "brick, laid by someone with mortar to spare" —
+    the age that mortars what the High Masonry laid dry. `brick-1099` adds "worked from the
+    other side", so the stair was bricked from the House, not from down here. Nothing narrated.
+  - as built (registration): `landings` is now `["2099 BA", "1099 BA"]`, oldest first.
+  - as built (deviation, minor): the wheel's 1099 description keeps the paddle vocabulary of
+    2099 BA rather than introducing new nouns, so the two faces read as one wheel.
 
 ## Through-lines
 
@@ -158,20 +191,35 @@ Leave the Turning House's `time` flags at `false`/`false`: no face of the House 
   `mill-race:2099-ba` → `FUTURE` → `mill-race:1099-ba`. Both new rooms are reachable in two
   moves; `npm run eval:reach` should report routes `DOWN` and `DOWN, FUTURE`. The `DOWN`
   exit on `turning-house` and the `1099 BA` entry in `world.landings` are both required for
-  this to hold — planned, not yet built.
+  this to hold. **Built and proved:** `npm run eval:reach` reports `verdict: PASS`,
+  `rooms: 3  reachable: 3`, routes `DOWN` and `DOWN, FUTURE`.
 - **The PAST/FUTURE pair.** `mill-race:2099-ba.time.future` and
   `mill-race:1099-ba.time.past` must both be `true`, and both rooms must carry the same
   `place: "mill-race"`, or `strideTarget` finds nothing and the stride fails in place.
-  Planned, not yet built.
+  **Built.** Both flags set, both rooms `place: "mill-race"`; the stride round-trips
+  (`DOWN FUTURE PAST UP` returns to the Turning House).
 - **The nail, empty then filled.** The soot-ringed nail on the beam is described in
   `mill-race:2099-ba` and answered in `mill-race:1099-ba`. Same beam, same nail, recognizably
-  the same words. This is the story's only payoff and it lives across both rooms. Planned.
+  the same words. This is the story's only payoff and it lives across both rooms. **Built:**
+  "An iron nail in a ring of soot, and nothing hanging on it." → "An iron nail in a ring of
+  soot, and the lantern hanging on it." The clause appears in each room's `look` and again in
+  its `nail-*` scenery, so the player meets it whether they read or examine.
 - **The lantern's three appearances.** Turning House (hangs, warm) → mill-race 2099 BA
   (absent; the nail is empty) → mill-race 1099 BA (hangs, warm). Non-takeable at every
   appearance, so it can never be in two places at once and no era-state has to be
-  reconciled. Planned.
+  reconciled. **Built.** The absence in 2099 BA is delivered by the engine's own "You can't
+  see any such thing.", which is the right amount of nothing.
 - **The wheel, turning then stopped.** The one contrast the time-step earns; keep it to the
-  two lines the writing guide allows. Planned.
+  two lines the writing guide allows. **Built:** "turns the wheel" against "the wheel stands
+  dry to the hub, one paddle sprung"; the engine's own two lines carry the stride itself.
+- **No verb for lighting the lantern, and that is the right answer.** The parser has no
+  `LIGHT`, so LIGHT LANTERN returns `I don't know the word "light".` — one dry line and no
+  mechanism, which is exactly what the outline asks for. Adding a verb would be an engine
+  change and is out of scope. Not a blocker; the behavior wanted is the behavior shipped.
+- **Every mentioned noun answers to EXAMINE** (`WRITING-GUIDE.md` rule 9). The Turning House
+  lantern also answers to NAIL and GLASS; `mill-race:2099-ba` has `house-above-2099` for the
+  common room overhead; `mill-race:1099-ba` folds HOUSE, CEILING, and STAIR into `brick-1099`,
+  which is all that is left of the way up.
 - **Known cosmetic edge, no action required.** The engine's closed-stride refusal is
   House-specific ("Tonight the House holds still"), so `PAST` at `mill-race:2099-ba` reads a
   little oddly. 2099 BA is the oldest landing and there is nothing back there either way.
